@@ -1,0 +1,27 @@
+datasource db {
+  provider = "postgresql"
+  url      = "postgresql://postgres:Tshirtstrip123@@db.hpotpzsrjsewrpkodyou.supabase.co:5432/postgres"
+}
+
+
+generator client {
+  provider = "prisma-client-js"
+}
+model User {
+  id      String     @id @unique 
+  name    String
+  profilepic String
+  posts   Post[]
+  Phonenumber Int 
+}
+
+
+model Post {
+  id         String       @id @unique 
+  title      String
+  content    String
+  authorId   String
+  author     User       @relation(fields: [authorId], references: [id])
+  categories String
+}
+
