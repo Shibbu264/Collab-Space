@@ -1,12 +1,13 @@
 "use client"
 import Image from 'next/image';
 import { useSession, signIn, signOut } from 'next-auth/react';
-import DeleteIcon from '@mui/icons-material/Delete';
+
 
 import { useEffect, useState } from 'react';
 import { v4 as uuid } from 'uuid';
 import Link from 'next/link';
 import { Hearts } from 'react-loader-spinner'
+import Leftbar from './components/leftbar';
 
 
 const Home1 = () => {
@@ -25,6 +26,7 @@ const Home1 = () => {
   const [user, setUser] = useState<User | null>(null);
   const unique_id = uuid().slice(0, 8);
   const [loading, setLoading] = useState(true)
+  const [value,setvalue]=useState(true)
   async function deleteNote(noteid: string) {
     await fetch('/api/deletenote', {
       method: 'POST',
@@ -47,10 +49,12 @@ const Home1 = () => {
 
       const data = await response.json();
       if (data.message) {
-        alert(data.message.name);
+        alert(data.message.name+"  Please Refresh!");
       }
+      else{
       console.log(data.user.posts);
       setUser(data.user);
+      }
       setLoading(false)
     }
 
@@ -86,47 +90,55 @@ const Home1 = () => {
   else {
     if (session) {
       return (
-        <div className='text-3xl'>
-          {user?.profilepic && (
-            <div className='flex sm:justify-start sm:items-start  items-center flex-col'>
-              <img className='my-3 block ml-[2%] w-16 h-16 rounded-full p-3 border-2 border-white' src={user.profilepic} />
-              <h1 className='my-4 ml-[2%]'> {session.user?.name} </h1>
-              <h1 className='ml-[2%] font-bold text-blue-400 my-2'>My Notes</h1>
-              <ul className='ml-[2%]'>
-                {user.posts?.map((post, index) => (
-                  <div className='flex sm:justify-start items-center justify-center my-3 gap-6' key={post.id}>
-                    <Link href={'/newnotes/' + post.id}>
-                      <li className=' hover:scale-105'>{post.title}</li>
-                    </Link>
-                    <button
-                      onClick={() => {
-                        deleteNote(post.id);
-                        const updatedPosts = user.posts?.filter((posti) => posti.id !== post.id) ?? [];
-                        setUser({ ...user, posts: updatedPosts });
-                      }}
-                    >
-                      <DeleteIcon className='cursor-pointer hover:text-red-500' />
-                    </button>
-                   
-                  </div>
-                ))}
-              </ul>
-              <button
-                      className=' ml-[2%] bg-white text-blue-500 hover:text-white hover:bg-blue-500 px-2 py-2 rounded-xl'
-                      onClick={() => signOut().then(() => window.location.replace('/signin'))}
-                    >
-                      Sign out
-                    </button>
-            </div>
-          )}
+        <div className='text-3xl  '>
+  <h1 className='my-4 flex font-semibold sm:justify-start justify-center ml-[2%]'>Hi {session.user?.name} </h1>
+        
+  <div className='flex sm:hidden items-center justify-center  my-16  '>
+   <span className={value?'mr-6 text-xl text-[#52df54] font-semibold  ':'mr-6 text-xl text-white font-medium  '}>Create notes!</span>
+   <div className='scale-125 ml-4 mt-1'><label className="relative inline-flex items-center mr-5 cursor-pointer">
+ 
+  <input type="checkbox" onClick={()=>{setvalue(!value)}} value="" className="sr-only peer" />
+  
+  <div className="w-11 h-6  rounded-full border-[#2ea430] border-2 peer   peer-focus:ring-4 peer-focus:ring-[#2ea430] dark:peer-focus:[#2ea430] peer-checked:after:translate-x-full  after:content-[''] after:absolute  after:left-[2px] after:bg-white after: after:border after:rounded-full after:h-5 after:w-5 after:transition-all  "></div>
+  
+</label></div><span className={value?'ml-6 text-xl text-white font-semibold  ':' ml-6 text-xl text-[#52df54] font-semibold  '}>View notes!</span>
+</div>
+        
+        
+        {value?
+        
+
+          <div>
           <br />
-          <Link href={'/newnotes/' + unique_id}>
-            <button className='mt-6 block mx-auto bg-white text-blue-500 font-semibold hover:text-white hover:bg-green-500 px-2 py-2 rounded-xl'>
+        
+            <div className='block mx-auto w-fit h-fit top-[55%]   absolute left-0 right-0'>
+            <Link href={'/newnotes/' + unique_id}>
+          <div className='mb-36 bg-transparent sm:flex     text-[320px]'>+</div>
+            <button className=' block mx-auto border   bg-black text-white hover:bg-white hover:text-black font-semibold  hover:bg- px-2 py-2 rounded-xl'>  
               Create notes!
             </button>
-          </Link>
+            </Link>
+            </div>
+         
+          </div>: <Leftbar session={session} user={user} deleteNote={deleteNote} setUser={setUser}/>
+    }
+     <div className='max-sm:hidden'>
+          <br />
+        
+            <div className='block mx-auto w-fit h-fit top-[55%]   absolute left-0 right-0'>
+            <Link href={'/newnotes/' + unique_id}>
+          <div className='mb-36 bg-transparent sm:flex     text-[320px]'>+</div>
+            <button className=' block mx-auto border   bg-black text-white hover:bg-white hover:text-black font-semibold  hover:bg- px-2 py-2 rounded-xl'>  
+              Create notes!
+            </button>
+            </Link>
+            </div>
+         
+          </div>
 
         </div>
+
+        
       );
     }
   }

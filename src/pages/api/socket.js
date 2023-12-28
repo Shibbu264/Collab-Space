@@ -13,9 +13,9 @@ export default   function GET(req,res) {
     console.log('Socket is initializing')
     const io = new Server(res.socket.server)
     res.socket.server.io = io
-    io.on('connection',(socket)=>{
-      console.log("Server is connected !")
-  })
+    io.on('connection', socket => {
+     console.log(socket.id)
+    })
   }
   res.end()
 }

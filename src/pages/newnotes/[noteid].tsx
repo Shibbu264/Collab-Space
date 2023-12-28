@@ -1,5 +1,5 @@
 "use client"
-import { useEffect, useRef, useState } from "react"
+import { useContext, useEffect, useRef, useState } from "react"
 import { useSession } from 'next-auth/react';
 import { stat } from "fs";
 import { Hearts } from "react-loader-spinner";
@@ -7,32 +7,25 @@ import Link from "next/link";
 import io from 'socket.io-client';
 import { Socket } from 'socket.io-client';
 import { useRouter } from "next/router";
+import { useSocket } from "@/context/socket";
 export default function Note({params}:{params:{noteid:string}}){
 const { data: session,status} = useSession() 
 const[title,settitle]=useState("Title")
 const [content,setContent]=useState("")
 const [loader,setloader]=useState(true)
-const [socket, setsocket] = useState<Socket | null>(null)
 const router=useRouter()
 const noteid1=router.query.noteid??""
 const [Noteidaftersaving,setnoteid]=useState("")
 
 
 
+const socket=useSocket()
+console.log(socket)
 
 
-const socketInitializer = async () => {
- 
-  const connection = io()
-console.log(connection)
- setsocket(connection)
-}
-socket?.on('connect_error',async (err:Error) =>{
-  console.log(err)
-  await fetch('/api/socket')})
 
 async function savenotes(noteid:string) {
-  
+  try{
     const response = await fetch("/api/notesave",{
         method:'POST',
         headers: {
@@ -46,7 +39,11 @@ async function savenotes(noteid:string) {
 setnoteid(data.post.id)
 settitle(data.post.title)
 setContent(data.post.content)
-setloader(false)
+setloader(false)}
+catch (e){
+  alert("Error: "+e)
+  window.location.replace("/")
+}
 }    
     
 useEffect(
@@ -54,7 +51,7 @@ useEffect(
   
 if(status=="authenticated" )
  { 
-//  socketInitializer()
+
   savenotes(noteid1 as string)
    console.log("inside-effect")
 }
@@ -79,6 +76,7 @@ async function savedata(){
 
 return (
 <div>
+  
 {loader?
   <div className="flex items-center justify-center h-screen">
   <div className="block text-center">
