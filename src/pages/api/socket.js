@@ -14,7 +14,12 @@ export default   function GET(req,res) {
     const io = new Server(res.socket.server)
     res.socket.server.io = io
     io.on('connection', socket => {
-     console.log(socket.id)
+
+     socket.on('update content', (content) => {
+     console.log(content)
+      io.emit('content update', content);
+    });
+  
     })
   }
   res.end()

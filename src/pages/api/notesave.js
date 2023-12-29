@@ -4,60 +4,45 @@ import { NextResponse } from 'next/server';
 
 
 const prisma=new PrismaClient()
-export default  async function POST(req,res){
+export default async function POST(req, res) {
+  const body = req.body;
+  const noteid = body.noteid;
 
-    const body=req.body
-    const noteid=body.noteid??""
+  try {
+    const user = await prisma.user.findUnique({
+      where: {
+        id: body.userid ?? ""
+      }
+    });
 
-    try{
-      const user=await prisma.user.findUnique({where:{
-        id:body.userid??""
-      }})
-     
-await prisma.post.upsert(
-  {create:{
-    id:noteid,
-    title:"New-note",
-    content:"",
-    authorId:user?.id??"",
-    categories:""
-     
-   },
- 
-  update:{
+    // Check if post with the given ID already exists
+    const existingPost = await prisma.post.findUnique({
+      where: {
+        id: noteid
+      }
+    });
+
+    if (existingPost) {
     
-  },
-  where:{
-    id:noteid,
-    
-  },
+     console.log("inside if")
+      res.json({ post: existingPost });
+    } else {
+   console.log("Inside else")
+      const newPost = await prisma.post.create({
+        data: {
+          id: noteid,
+          title: "New-note",
+          content: "",
+          authorId: user?.id ?? "",
+          categories: ""
+        }
+      });
 
- 
-
-  }
-)
-const post =await prisma.post.findUnique({
-  where:{
-    id:noteid
-  }
-})
-console.log(post)
-res.json({post:post})
-
+      console.log(newPost+"BC");
+      res.json({ post: newPost });
     }
-    catch (e){
-console.log(e)
-res.json(
-  {error:e}
-)
-
-    }
-
-
-
-
-
-
-
-
+  } catch (e) {
+    console.log(e);
+    res.json({ error: e });
   }
+}

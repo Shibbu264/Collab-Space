@@ -2,7 +2,6 @@
 import Image from 'next/image';
 import { useSession, signIn, signOut } from 'next-auth/react';
 
-
 import { useEffect, useState } from 'react';
 import { v4 as uuid } from 'uuid';
 import Link from 'next/link';
@@ -104,7 +103,7 @@ const Home1 = () => {
 </label></div><span className={value?'ml-6 text-xl text-white font-semibold  ':' ml-6 text-xl text-[#52df54] font-semibold  '}>View notes!</span>
 </div>
         
-        
+      {value?<div className='max-sm:hidden'><Leftbar  session={session} user={user} deleteNote={deleteNote} setUser={setUser}/></div>:<></>}  
         {value?
         
 
