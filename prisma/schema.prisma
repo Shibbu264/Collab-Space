@@ -23,5 +23,6 @@ model Post {
   authorId   String
   author     User       @relation(fields: [authorId], references: [id])
   categories String
+  Collaborators String
 }
 
