@@ -8,7 +8,7 @@ export default function Leftbar ({session,user,deleteNote,setUser}){
 return ( <div>
     {user?.profilepic && (
       <div className='sm:flex sm:justify-start sm:items-start    items-center flex-col'>
-        {/* <img className='my-3 hidden sm:block ml-[2%] w-16 h-16 rounded-full p-3 border-2 border-white' src={user.profilepic} /> */}
+       
       
         <h1 className='ml-[2%] font-bold text-blue-400 my-2'>Your Notes</h1>
         <ul className='ml-[2%]'>

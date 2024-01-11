@@ -2,8 +2,8 @@ import { PrismaClient } from '@prisma/client';
 import { NextResponse } from 'next/server';
 
 
-
-const prisma=new PrismaClient()
+import { prisma } from '@/prismahook/prisma';
+// const prisma=new PrismaClient()
 export default  async function POST(req,res){
 
     const body= req.body

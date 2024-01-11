@@ -2,8 +2,8 @@ import { PrismaClient } from '@prisma/client';
 import { NextResponse } from 'next/server';
 
 
-
-const prisma=new PrismaClient()
+import { prisma } from '@/prismahook/prisma';
+// const prisma=new PrismaClient()
 export default async function POST(req, res) {
   const body = req.body;
   const noteid = body.noteid;
@@ -26,7 +26,8 @@ export default async function POST(req, res) {
     
      console.log("inside if")
       res.json({ post: existingPost });
-    } else {
+    } 
+    else {
    console.log("Inside else")
       const newPost = await prisma.post.create({
         data: {
@@ -38,7 +39,7 @@ export default async function POST(req, res) {
         }
       });
 
-      console.log(newPost+"BC");
+      console.log(newPost.authorId);
       res.json({ post: newPost });
     }
   } catch (e) {

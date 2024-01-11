@@ -20,7 +20,7 @@ const [loader,setloader]=useState(true)
 const router=useRouter()
 const noteid1=router.query.noteid
 const [Noteidaftersaving,setnoteid]=useState("")
-
+const ab =useRef(false)
 
 
 const socket=useSocket()
@@ -69,9 +69,9 @@ catch (e){
 useEffect(
   ()=>{
   
-if(status=="authenticated" )
+if(status=="authenticated" && !ab.current )
  { 
-
+  ab.current=true
   savenotes(noteid1 )
    console.log("inside-effect")
 }
