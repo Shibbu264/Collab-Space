@@ -45,7 +45,7 @@ try{
   return true
 }
 catch (error){
-  alert(error)
+  console.log(error)
   return false
 }
       
@@ -56,7 +56,7 @@ catch (error){
     async session({ session, user, token }) {
       return session
     },
-    async jwt({ token, user, account, profile, isNewUser }) {
+    async jwt({ token, user, account, profile }) {
       return token
     }
 }

@@ -20,7 +20,7 @@ console.log(connection)
     }, [])
    socket?.on('connect_error',async (err) =>{
     console.log(err)
-    await fetch('/api/socket')})
+    await fetch('http://localhost:5000/socket')})
 
     return (
         <SocketContext.Provider value={socket}>

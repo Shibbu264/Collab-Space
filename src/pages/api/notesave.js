@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 
 
 import { prisma } from '@/prismahook/prisma';
-// const prisma=new PrismaClient()
+//  const prisma=new PrismaClient()
 export default async function POST(req, res) {
   const body = req.body;
   const noteid = body.noteid;
@@ -34,8 +34,9 @@ export default async function POST(req, res) {
           id: noteid,
           title: "New-note",
           content: "",
-          authorId: user?.id ?? "",
-          categories: ""
+          authorId: user.id ,
+          categories: "",
+          Collaborators:""
         }
       });
 
