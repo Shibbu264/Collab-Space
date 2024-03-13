@@ -5,11 +5,12 @@ import { Hearts } from "react-loader-spinner";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useSocket } from "@/context/socket";
-
+import {showToast} from "../components/toast";
 
 
 
 export default function Note() {
+  
   const { data: session, status } = useSession()
   const [title, settitle] = useState("Title")
   const [showcontent, setshowcontent] = useState(false)
@@ -21,7 +22,7 @@ export default function Note() {
   const [addoption, setaddoption] = useState(false)
   const ab = useRef(false)
 
-  const [inputValue, setInputValue] = useState('');
+  const [Collaborators, setCollaborators] = useState('');
 
 
   const socket = useSocket()
@@ -44,6 +45,27 @@ export default function Note() {
     }
   }, [socket]);
 
+async function addCollaborator(){
+  try{
+ const response = await fetch("/api/addcollaborator",{
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    noteid:noteid1,
+    Collaborator:Collaborators
+  })
+ })
+ const data=await response.json()
+ showToast(data.message)
+  }
+  catch (error){
+    console.log(error)
+  }
+}
+
+
 
   async function savenotes(noteid) {
     try {
@@ -59,7 +81,7 @@ export default function Note() {
       })
       const data = await response.json()
 
-      if (data.post.authorId == session?.user.email) {
+      if (data.post.Collaborators.includes( session.user.email)) {
         setnoteid(data.post.id)
         settitle(data.post.title)
         setContent(data.post.content)
@@ -153,10 +175,14 @@ export default function Note() {
                     <label for="search" className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
                     <div className="relative flex justify-between">
 
-                      <input type="search" onChange={(e) => { setInputValue(e.target.value) }} value={inputValue}
+                      <input type="search" onChange={(e) => { setCollaborators(e.target.value) 
+                     
+                    }} 
+                    
+                    value={Collaborators}
 
                         id="search" className="block min-w-80 p-4  text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Email" required />
-                      <button type="submit" className="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Add</button>
+                      <button onClick={addCollaborator} type="button" className="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Add</button>
                     </div>
                   </form>
                   <button onClick={() => setaddoption(false)} className="my-1 hover:text-white text-white w-fit border-white border font-semibold hover:bg-red-500 px-2 rounded-md py-1 block mx-auto">Cancel </button>

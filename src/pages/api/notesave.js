@@ -36,7 +36,7 @@ export default async function POST(req, res) {
           content: "",
           authorId: user.id ,
           categories: "",
-          Collaborators:""
+          Collaborators:[user.id]
         }
       });
 

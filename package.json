@@ -28,7 +28,8 @@
     "react-social-login-buttons": "^3.9.1",
     "socket.io": "^4.7.2",
     "socket.io-client": "^4.7.2",
-    "uuidv4": "^6.2.13"
+    "uuidv4": "^6.2.13",
+    "react-toastify": "^10.0.4"
   },
   "devDependencies": {
     "@types/node": "^20",
