@@ -6,7 +6,7 @@ const app = express();
 app.use(cors())
 const httpServer = createServer(app);
 const io = new Server(httpServer, {cors: {
-  origin: "*", 
+  origin: "https://notion-clone-2fkg.vercel.app", 
   methods: ["GET", "POST"] 
 }});
 
@@ -27,7 +27,10 @@ app.get('/socket', (req, res) => {
   } 
   else {
     console.log('Socket is initializing');
-    const io = new Server(res.socket.server);
+    const io = new Server(res.socket.server,{cors: {
+      origin: "https://notion-clone-2fkg.vercel.app", 
+      methods: ["GET", "POST"] 
+    }});
     res.socket.server.io = io;
     io.on('connection', (socket) => {
       socket.on('update content', (content) => {

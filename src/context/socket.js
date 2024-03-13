@@ -21,7 +21,7 @@ useEffect(() => {
     console.log(connection);
 
   }, []);
-   socket?.on('connect_error',async (err) =>{
+   socket?.on('connect_error', async (err) =>{
     console.log(err)
     await fetch(process.env.NEXT_PUBLIC_BACKEND_URL+'/socket')})
 
