@@ -138,7 +138,6 @@ export default function Note() {
               }} className="block px-2 text-4xl placeholder:text-white border-0 focus:border-none text-center text-white bg-black min-w-72 h-fit min-h-16 w-fit" type="text" ></input>
               <textarea value={content} onChange={(e) => {
                 setContent(e.target.value)
-                  socket?.emit('update content', e.target.value)
                 const value = e.target.value; if (value[value.length - 1] === ' ' || value[value.length - 1] === '.') {
                   socket?.emit('update content', e.target.value)
                   savedata()
