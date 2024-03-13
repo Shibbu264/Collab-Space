@@ -11,8 +11,8 @@ return (
     <div className='w-fit  p-6 rounded-lg sm:h-72 sm:border text-3xl block mx-auto my-[25%] sm:my-[15%]  text-center'>
     <h1 className="text-3xl font-semibold">Welcome to ThoughtBook</h1>
     <div className="flex flex-col items-center gap-4 my-8">
-     <GoogleLoginButton onClick={() => signIn("google",{callbackUrl:'http://localhost:3000/home'})}></GoogleLoginButton>
-     <GithubLoginButton onClick={() => signIn("github",{callbackUrl:"http://localhost:3000/home"})}> </GithubLoginButton>
+     <GoogleLoginButton onClick={() => signIn("google",{callbackUrl:'/home'})}></GoogleLoginButton>
+     <GithubLoginButton onClick={() => signIn("github",{callbackUrl:"/home"})}> </GithubLoginButton>
      </div>
     </div>
     
