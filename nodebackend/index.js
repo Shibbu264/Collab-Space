@@ -1,15 +1,31 @@
 import express from 'express';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
-
+import cors from "cors"
 const app = express();
+app.use(cors())
 const httpServer = createServer(app);
-const io = new Server(httpServer);
+const io = new Server(httpServer, {cors: {
+  origin: "*", 
+  methods: ["GET", "POST"] 
+}});
+
+io.on('connection', (socket) => {
+  socket.on('update content', (content) => {
+    console.log(content);
+    io.emit('content update', content);
+  });
+  socket.on('update title', (content) => {
+    console.log(content);
+    io.emit('title update', content);
+  });
+});
 
 app.get('/socket', (req, res) => {
   if (res.socket.server.io) {
     console.log('Socket is already running');
-  } else {
+  } 
+  else {
     console.log('Socket is initializing');
     const io = new Server(res.socket.server);
     res.socket.server.io = io;
