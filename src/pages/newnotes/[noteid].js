@@ -74,24 +74,8 @@ export default function Note() {
     }
   }
 
-  async function saveasynchronously(noteid) {
-    try {
-      const response = await fetch("/api/notesave", {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          noteid: noteid, userid: session?.user?.email
 
-        })
-      })  
-    }
-    catch (e) {
-      alert("Error: " + e)
-    }
-  }
-
+  
   useEffect(
     () => {
 
@@ -147,7 +131,7 @@ export default function Note() {
                 socket?.emit('update title', e.target.value)
                 const value = e.target.value
 
-                saveasynchronously()
+                savedata()
 
                 settitle(e.target.value)
               }} className="block px-2 text-4xl placeholder:text-white border-0 focus:border-none text-center text-white bg-black min-w-72 h-fit min-h-16 w-fit" type="text" ></input>
@@ -155,7 +139,7 @@ export default function Note() {
                   socket?.emit('update content', e.target.value)
                 const value = e.target.value; if (value[value.length - 1] === ' ' || value[value.length - 1] === '.') {
                   socket?.emit('update content', e.target.value)
-                  saveasynchronously()
+                  savedata()
                 } setContent(e.target.value)
                
 
