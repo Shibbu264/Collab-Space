@@ -16,14 +16,14 @@ useEffect(() => {
       return;
     }
     onetimer.current = true;
-    const connection = io('http://localhost:5000'); 
+    const connection = io(process.env.NEXT_PUBLIC_BACKEND_URL); 
     setsocket(connection);
     console.log(connection);
 
   }, []);
    socket?.on('connect_error',async (err) =>{
     console.log(err)
-    await fetch('http://localhost:5000/socket')})
+    await fetch(process.env.NEXT_PUBLIC_BACKEND_URL+'/socket')})
 
     return (
         <SocketContext.Provider value={socket}>
