@@ -1,5 +1,5 @@
 "use client"
-import { useContext, useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useSession } from 'next-auth/react';
 import { Hearts } from "react-loader-spinner";
 import Link from "next/link";
@@ -59,12 +59,12 @@ export default function Note() {
       })
       const data = await response.json()
 
-      if (data.post.authorId == session?.user.email) {
-        setnoteid(data.post.id)
-        settitle(data.post.title)
-        setContent(data.post.content)
-        setshowcontent(true)
-      }
+      // if (data.post.authorId == session?.user.email) {
+      //   setnoteid(data.post.id)
+      //   settitle(data.post.title)
+      //   setContent(data.post.content)
+      //   setshowcontent(true)
+      // }
       setloader(false)
     }
 
