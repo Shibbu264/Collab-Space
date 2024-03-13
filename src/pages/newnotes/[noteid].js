@@ -170,7 +170,7 @@ async function addCollaborator(){
 
               {!addoption ? <button onClick={() => setaddoption(true)} className="my-1 hover:text-black text-white border-white border font-semibold hover:bg-white px-4 rounded-md py-2 block mx-auto">{'Add Collaborators !'} </button>
                 :
-                <div className="flex  justify-center gap-[5%]">
+                <div className="sm:flex flex-col  justify-center gap-[5%]">
                   <form >
                     <label for="search" className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
                     <div className="relative flex justify-between">
