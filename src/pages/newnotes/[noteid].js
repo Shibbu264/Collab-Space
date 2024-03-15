@@ -24,7 +24,13 @@ export default function Note() {
 
   const [Collaborators, setCollaborators] = useState('');
 
+   function getwindowurl(){
+console.log(window.location.href)
+navigator.clipboard.writeText(window.location.href)
+showToast(" Copied to Clipboard !")
 
+  }
+ 
   const socket = useSocket()
 
   useEffect(() => {
@@ -100,11 +106,20 @@ async function addCollaborator(){
   
   useEffect(
     () => {
-
+      
       if (status == "authenticated" && !ab.current) {
         ab.current = true
         savenotes(noteid1)
-        console.log("inside-effect")
+       
+      
+      }
+      else if(status=="unauthenticated"){
+        sessionStorage.setItem("url",window.location.href)
+        window.location.replace("/signin")
+      }
+      return ()=>{
+        sessionStorage.clear()
+        
       }
 
     }
@@ -186,9 +201,11 @@ async function addCollaborator(){
                     </div>
                   </form>
                   <button onClick={() => setaddoption(false)} className="my-1 hover:text-white text-white w-fit border-white border font-semibold hover:bg-red-500 px-2 rounded-md py-1 block mx-auto">Cancel </button>
+                  
+                 
                 </div>
               }
-
+              <button onClick={getwindowurl} className="my-1 hover:text-white text-white w-fit border-white border font-semibold hover:bg-red-500 px-2 rounded-md py-1 block mx-auto">Copy link to notes ! </button>
               <Link href="/home"> <button className="mt-2 mb-1 hover:text-black text-white border-white border font-semibold hover:bg-white px-4 rounded-md py-2 block mx-auto">{'BACK =>'} </button></Link>
 
 
