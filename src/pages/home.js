@@ -1,6 +1,6 @@
 "use client"
 import Image from 'next/image';
-import { useSession, signIn, signOut } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 
 import { useEffect, useState } from 'react';
 import { v4 as uuid } from 'uuid';
@@ -20,17 +20,11 @@ import { v4 as uuid } from 'uuid';
 
   }, [status, session.user.email]);
 
-  function redirectToSignIn() {
-    window.location.replace('/signin');
-    return (<></>);
-  }
   if (status == "unauthenticated") {
-    redirectToSignIn();
+    window.location.replace('/signin');
   }
 
-  if (status === 'loading' || loading) {
-    
-    return (
+  if (status === 'loading' || loading) {return (
   <div className='flex items-center justify-center h-screen'>
 
 
@@ -49,8 +43,7 @@ import { v4 as uuid } from 'uuid';
      
 
     </div>
-  </div>)
-  }
+  </div>)}
   else {
     if (session) {
       return (
