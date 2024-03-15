@@ -24,7 +24,7 @@ export default function Note() {
 
   const [Collaborators, setCollaborators] = useState('');
 
-   function getwindowurl(){
+   async function getwindowurl(){
 console.log(window.location.href)
 navigator.clipboard.writeText(window.location.href)
 showToast(" Copied to Clipboard !")
