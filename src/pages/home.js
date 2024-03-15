@@ -24,7 +24,8 @@ import { v4 as uuid } from 'uuid';
     window.location.replace('/signin');
   }
 
-  if (status === 'loading' || loading) return (<div className='flex items-center justify-center h-screen'>
+  if (status === 'loading' || loading) {return (
+  <div className='flex items-center justify-center h-screen'>
 
 
 
@@ -42,7 +43,7 @@ import { v4 as uuid } from 'uuid';
      
 
     </div>
-  </div>)
+  </div>)}
   else {
     if (session) {
       return (
