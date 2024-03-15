@@ -33,7 +33,7 @@ export default async function POST(req, res) {
         data: {
           id: noteid,
           title: "New-note",
-          content: "",
+          content: [""],
           authorId: user.id ,
           categories: "",
           Collaborators:[user.id]

@@ -17,6 +17,7 @@
     "@mui/icons-material": "^5.15.2",
     "@mui/material": "^5.15.2",
     "@prisma/client": "^5.7.1",
+    "axios": "^1.6.7",
     "lexical": "^0.12.5",
     "next": "14.0.4",
     "next-auth": "^4.24.5",
@@ -24,15 +25,14 @@
     "prisma-client": "^0.0.0",
     "react": "^18",
     "react-dom": "^18",
+    "react-icons": "^5.0.1",
     "react-loader-spinner": "^6.1.6",
     "react-social-login-buttons": "^3.9.1",
+    "react-toastify": "^10.0.4",
+    "recoil": "^0.7.7",
     "socket.io": "^4.7.2",
     "socket.io-client": "^4.7.2",
-    "uuidv4": "^6.2.13",
-    "react-toastify": "^10.0.4",
-    "axios": "^1.6.7",
-    "recoil": "^0.7.7"
-    
+    "uuidv4": "^6.2.13"
   },
   "devDependencies": {
     "@types/node": "^20",
