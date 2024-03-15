@@ -22,6 +22,7 @@ import { v4 as uuid } from 'uuid';
 
   if (status == "unauthenticated") {
     window.location.replace('/signin');
+    return("")
   }
 
   if (status === 'loading' || loading) {return (
