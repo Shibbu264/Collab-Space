@@ -17,6 +17,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "src/pages/api/socket.js", "src/pages/api/deletenote.js", "src/pages/api/notesave.js", "src/pages/api/savedata.js", "src/pages/api/userdata.js", "src/pages/components/leftbar.js", "src/pages/newnotes/[noteid].js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "src/pages/api/socket.js", "src/pages/api/deletenote.js", "src/pages/api/notesave.js", "src/pages/api/savedata.js", "src/pages/api/userdata.js", "src/pages/components/leftbar.js", "src/pages/newnotes/[noteid].js", "src/pages/home.js"],
   "exclude": ["node_modules"]
 }
