@@ -20,9 +20,12 @@ import { v4 as uuid } from 'uuid';
 
   }, [status, session.user.email]);
 
-  if (status == "unauthenticated") {
+  function redirectToSignIn() {
     window.location.replace('/signin');
-    return(<></>)
+    return (<></>);
+  }
+  if (status == "unauthenticated") {
+    redirectToSignIn();
   }
 
   if (status === 'loading' || loading) {
