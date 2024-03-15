@@ -2,11 +2,13 @@ import express from 'express';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import cors from "cors"
+import dotenv from 'dotenv';
+dotenv.config({ path: '.env.local' });
 const app = express();
 app.use(cors())
 const httpServer = createServer(app);
 const io = new Server(httpServer, {cors: {
-  origin: "https://thought-box-2fkg.vercel.app", 
+  origin: process.env.ORIGIN, 
   methods: ["GET", "POST"] 
 }});
 
@@ -28,7 +30,7 @@ app.get('/socket', (req, res) => {
   else {
     console.log('Socket is initializing');
     const io = new Server(res.socket.server,{cors: {
-      origin: "https://thought-box-2fkg.vercel.app", 
+      origin: process.env.ORIGIN, 
       methods: ["GET", "POST"] 
     }});
     res.socket.server.io = io;
