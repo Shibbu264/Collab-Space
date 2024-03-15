@@ -16,14 +16,14 @@ import { v4 as uuid } from 'uuid';
 
   useEffect(() => {
       setLoading(false)
+      if (status === "unauthenticated") {
+        window.location.replace('/signin');
+      }
     
 
   }, [status, session.user.email]);
 
-  if (status == "unauthenticated") {
-    window.location.replace('/signin');
-  }
-
+ 
   if (status === 'loading' || loading) {return (
   <div className='flex items-center justify-center h-screen'>
 
@@ -44,6 +44,8 @@ import { v4 as uuid } from 'uuid';
 
     </div>
   </div>)}
+
+
   else {
     if (session) {
       return (
