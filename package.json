@@ -29,7 +29,10 @@
     "socket.io": "^4.7.2",
     "socket.io-client": "^4.7.2",
     "uuidv4": "^6.2.13",
-    "react-toastify": "^10.0.4"
+    "react-toastify": "^10.0.4",
+    "axios": "^1.6.7",
+    "recoil": "^0.7.7"
+    
   },
   "devDependencies": {
     "@types/node": "^20",
