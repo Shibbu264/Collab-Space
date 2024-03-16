@@ -10,6 +10,7 @@ export default  async function POST(req,res){
     const noteid=body.noteid??""
 const title=body.title??""
 const content=body.content??""
+const links=body.links
     try{
       const user=await prisma.user.findUnique({where:{
         id:body.userid??""
@@ -29,7 +30,8 @@ await prisma.post.upsert(
   update:{
     title:title,
     content:content,
-    categories:""
+    categories:"",
+    links:links
   },
   where:{
     id:noteid,

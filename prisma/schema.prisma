@@ -21,9 +21,11 @@ model Post {
   id         String       @id @unique 
   title      String
   content    String[] @default(["Write here !"])
+  links   String[]
   authorId   String
   author     User       @relation(fields: [authorId], references: [id])
   categories String
   Collaborators String[]
 }
+
 
