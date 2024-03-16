@@ -110,10 +110,10 @@ const Home1 = () => {
           <div>
           <br />
         
-            <div className='block mx-auto w-fit h-fit top-[55%]   absolute left-0 right-0'>
+            <div className='block mt-56 mx-auto w-fit h-28   '>
             <Link href={'/newnotes/' + unique_id}>
-          <div className='mb-36 bg-transparent sm:flex     text-[320px]'>+</div>
-            <button className=' block mx-auto border   bg-black text-white hover:bg-white hover:text-black font-semibold  hover:bg- px-2 py-2 rounded-xl'>  
+          <div className='mb-36 bg-transparent sm:flex h-fit text-[270px] sm:text-[320px]'>+</div>
+          <button className=' block mx-auto border   bg-black text-white hover:bg-white hover:text-black font-semibold  hover:bg- px-2 py-2 rounded-xl'>  
               Create notes!
             </button>
             </Link>
