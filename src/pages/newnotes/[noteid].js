@@ -44,10 +44,10 @@ export default function Note() {
     setNewContent('');
   };
   const  addNewLink = async () => {
-    setlink(prevContents => [...prevContents, newLink]);
     const text = await navigator.clipboard.readText();
     console.log(text)
     setNewLink(text)
+    setlink(prevContents => [...prevContents, newLink]);
   };
 
 

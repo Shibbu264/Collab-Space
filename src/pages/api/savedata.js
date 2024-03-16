@@ -22,6 +22,7 @@ await prisma.post.upsert(
     title:title,
     content:content,
     authorId:user?.id??"",
+    links:links,
     categories:"",
     Collaborators:[user.id]
      

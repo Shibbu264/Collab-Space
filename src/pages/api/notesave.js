@@ -36,6 +36,7 @@ export default async function POST(req, res) {
           content: [""],
           authorId: user.id ,
           categories: "",
+          links:[""],
           Collaborators:[user.id]
         }
       });
