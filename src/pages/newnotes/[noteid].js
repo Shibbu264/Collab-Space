@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 import { useSocket } from "@/context/socket";
 import { showToast } from "../components/toast";
 import { FaTrash } from "react-icons/fa"
-
+import ReactPlayer from 'react-player';
 
 export default function Note() {
 
@@ -32,8 +32,12 @@ export default function Note() {
     console.log(window.location.href)
     navigator.clipboard.writeText(window.location.href)
     showToast(" Copied to Clipboard !")
-
+    
+  
   }
+  const isYouTubeLink= (link) => {
+    return link.includes("youtube.com") || link.includes("youtu.be");
+  };
   async function deleteIndex(index) {
     setContent(prevContents => prevContents.filter((_, idx) => idx !== index));
   }
@@ -226,7 +230,7 @@ export default function Note() {
                 socket?.emit('update title', e.target.value)
 
 
-              }} className="block font-bold py-1 px-1  sm:text-4xl text-2xl  text-red-500 rounded-lg  focus:border-none text-center min-w-32    h-fit min-h-16 " type="text" ></input>
+              }} className="block font-bold py-1 px-1 bg-black border border-white  sm:text-4xl text-2xl  text-red-500 rounded-lg  focus:border-none text-center min-w-32    h-fit min-h-16 " type="text" ></input>
               {contents.map((content, index) => (
                 <div key={index} className="flex justify-center w-[90%]">
                   <textarea key={index} value={content} onChange={(e) => {
@@ -245,14 +249,27 @@ export default function Note() {
                 </div>))
               }
 
-              {links.map((link, index) => (
-                <div key={index} className="flex w-[90%] items-center  justify-center">
-                  <a rel="noreferrer" target="_blank" href={link} className="h-fit p-2 border-1 text-blue-500    font-semibold  text-sm sm:text-xl text-wrap text-center  bg-gray-50 rounded-lg     dark:bg-gray-200   " >{link}</a>
-                  <button onClick={() => deleteLink(index)} className="ml-2 text-red-600 hover:text-red-900 focus:outline-none">
-                    <FaTrash />
-                  </button>
-                </div>))
-              }
+{links.map((link, index) => (
+        <div key={index} className={`flex flex-row w-[90%] items-center justify-center`}>
+          {isYouTubeLink(link) ? (
+            // Render YouTube player if it's a YouTube video link
+            <ReactPlayer url={link} controls={true} />
+          ) : (
+            // Render regular link if it's not a YouTube video link
+            <a
+              rel="noreferrer"
+              target="_blank"
+              href={link}
+              className="h-fit p-2 border-1 text-blue-500 font-semibold text-sm sm:text-xl text-wrap text-center bg-gray-50 rounded-lg dark:bg-gray-200"
+            >
+              {link}
+            </a>
+          )}
+          <button onClick={() => deleteLink(index)} className="ml-2 text-red-600 hover:text-red-900 focus:outline-none">
+            <FaTrash />
+          </button>
+        </div>
+      ))}
 
 
               <button onClick={addNewIndex} className="my-1 text-center  text-5xl font-bold hover:text-black text-white border-white border  hover:bg-white p-1 rounded-md block mx-auto ">+</button>
