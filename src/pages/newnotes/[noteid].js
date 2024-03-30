@@ -226,7 +226,7 @@ export default function Note() {
                 socket?.emit('update title', e.target.value)
 
 
-              }} className="block font-bold py-1 px-1 border-2 sm:text-4xl text-2xl bg-slate-50 text-red-500 rounded-lg  focus:border-none text-center min-w-32    h-fit min-h-16 " type="text" ></input>
+              }} className="block font-bold py-1 px-1  sm:text-4xl text-2xl  text-red-500 rounded-lg  focus:border-none text-center min-w-32    h-fit min-h-16 " type="text" ></input>
               {contents.map((content, index) => (
                 <div key={index} className="flex justify-center w-[90%]">
                   <textarea key={index} value={content} onChange={(e) => {
