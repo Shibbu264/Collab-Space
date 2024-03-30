@@ -110,10 +110,10 @@ const Home1 = () => {
           <div>
           <br />
         
-            <div className='block mt-56 mx-auto w-fit h-28   '>
+            <div className='flex flex-col items-center gap-12 sm:hidden mt-24 mx-auto w-fit h-28   '>
             <Link href={'/newnotes/' + unique_id}>
-          <div className='mb-36 bg-transparent sm:flex h-fit text-[270px] sm:text-[320px]'>+</div>
-          <button className=' block mx-auto border   bg-black text-white hover:bg-white hover:text-black font-semibold  hover:bg- px-2 py-2 rounded-xl'>  
+        <img className='w-32 rounded-lg h-32 block mx-auto' src="/icon.jpg"/>
+          <button className=' block text-lg mx-auto border my-12   bg-black text-white hover:bg-white hover:text-black font-semibold  hover:bg- px-2 py-2 rounded-lg'>  
               Create notes!
             </button>
             </Link>
@@ -121,7 +121,7 @@ const Home1 = () => {
          
           </div>: <Leftbar session={session} user={user} deleteNote={deleteNote} setUser={setUser}/>
     }
-     <div className='max-sm:hidden'>
+     <div className='hidden sm:block'>
           <br />
         
             <div className='block mx-auto w-fit h-fit top-[55%]   absolute left-0 right-0'>
