@@ -4,67 +4,55 @@ import { NextResponse } from 'next/server';
 
 import { prisma } from '@/prismahook/prisma';
 // const prisma=new PrismaClient()
-export default  async function POST(req,res){
+export default async function POST(req, res) {
 
-    const body= req.body
-    const noteid=body.noteid??""
-const title=body.title??""
-const content=body.content??""
-const links=body.links
-    try{
-      const user=await prisma.user.findUnique({where:{
-        id:body.userid??""
-      }})
-     
-await prisma.post.upsert(
-  {create:{
-    id:noteid,
-    title:title,
-    content:content,
-    authorId:user?.id??"",
-    links:links,
-    categories:"",
-    Collaborators:[user.id]
-     
-   },
- 
-  update:{
-    title:title,
-    content:content,
-    categories:"",
-    links:links
-  },
-  where:{
-    id:noteid,
-    
-  },
+  const body = req.body
+  console.log(body)
+  const noteid = body.noteid ?? ""
+  const title = body.title ?? ""
+  const content = body.content ?? ""
+  const links = body.links
+  try {
+    const user = await prisma.user.findUnique({
+      where: {
+        id: body.userid
+      }
+    })
 
- 
+    await prisma.post.update(
+      {
+        where: {
+          id: noteid,
+        },
+        data: {
+          title: title,
+          content: content,
+          links: links,
+        },
+      }
+    )
+    const post = await prisma.post.findUnique({
+      where: {
+        id: noteid
+      }
+    })
+
+    res.json({ post: post })
 
   }
-)
-const post =await prisma.post.findUnique({
-  where:{
-    id:noteid
-  }
-})
-console.log(post)
- res.json({post:post})
-
-    }
-    catch (e){
-console.log(e)
- res.json(
-  {error:e}
-)
-
-    }
-
-
-
-
-
-
-
+  catch (e) {
+    console.log(e)
+    res.json(
+      { error: e }
+    )
 
   }
+
+
+
+
+
+
+
+
+}

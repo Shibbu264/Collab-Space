@@ -25,6 +25,7 @@ export default function Note() {
   const [addoption, setaddoption] = useState(false)
   const ab = useRef(false)
   const [Collaborators, setCollaborators] = useState('');
+  const [firstload, setloaded] = useState(false)
   const socket = useSocket()
 
   async function getwindowurl() {
@@ -43,11 +44,11 @@ export default function Note() {
     setContent(prevContents => [...prevContents, newContent]);
     setNewContent('');
   };
-  const  addNewLink = async () => {
+  const addNewLink = async () => {
     const text = await navigator.clipboard.readText();
     console.log(text)
     setNewLink(text)
-    setlink(prevContents => [...prevContents, newLink]);
+    setlink(prevContents => [...prevContents, text]);
   };
 
 
@@ -64,13 +65,14 @@ export default function Note() {
         })
       })
       const data = await response.json()
-
+      console.log("qt data", data)
       if (data.post.Collaborators.includes(session.user.email)) {
         setnoteid(data.post.id)
         settitle(data.post.title)
         setContent(data.post.content)
         setlink(data.post.links)
         setshowcontent(true)
+        setloaded(true)
       }
       setloader(false)
     }
@@ -107,8 +109,8 @@ export default function Note() {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        noteid: noteid1, userid: session?.user?.email
-        , title: title, content: contents, links:links
+        noteid: noteid1, userid: session.user.email
+        , title: title, content: contents, links: links
       })
     })
     console.log("data saved!")
@@ -119,7 +121,7 @@ export default function Note() {
 
 
 
-  useEffect(() => { savedata() }, [contents.length,links])
+  useEffect(() => { if (firstload) { savedata() } }, [contents.length, links.length])
   useEffect(() => {
     console.log(socket)
     if (socket) {
@@ -217,22 +219,23 @@ export default function Note() {
             <div className="flex flex-col  items-center gap-5  justify-center">
               <input value={title} onChange={(e) => {
 
-                socket?.emit('update title', e.target.value)
+
                 const value = e.target.value
                 settitle(e.target.value)
                 savedata()
+                socket?.emit('update title', e.target.value)
 
 
               }} className="block font-bold py-1 px-1 border-2 sm:text-4xl text-2xl bg-slate-50 text-red-500 rounded-lg  focus:border-none text-center min-w-32    h-fit min-h-16 " type="text" ></input>
-{contents.map((content, index) => (
+              {contents.map((content, index) => (
                 <div key={index} className="flex justify-center w-[90%]">
                   <textarea key={index} value={content} onChange={(e) => {
                     const value = e.target.value;
                     const updatedContents = [...contents];
                     updatedContents[index] = value;
                     setContent(updatedContents); if (value.length <= 10 || value.includes(" ") || value[value.length - 1] === ' ' || value[value.length - 1] === '.') {
-                      socket?.emit('update content', e.target.value)
                       savedata()
+                      socket?.emit('update title', e.target.value)
                     }
 
                   }} id="message" className="h-fit p-6 border-8  min-w-[80%] sm:min-h-[80%] w-fit font-semibold  sm:text-2xl text-gray-900 bg-gray-50 rounded-lg  border-blue-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-200" placeholder="Write your thoughts here..."></textarea>
@@ -244,14 +247,14 @@ export default function Note() {
 
               {links.map((link, index) => (
                 <div key={index} className="flex w-[90%] items-center  justify-center">
-                  <a rel="noreferrer" target="_blank"  href={link} className="h-fit p-2 border-1 text-blue-500    font-semibold  text-sm sm:text-xl text-wrap text-center  bg-gray-50 rounded-lg     dark:bg-gray-200   " >{link}</a>
+                  <a rel="noreferrer" target="_blank" href={link} className="h-fit p-2 border-1 text-blue-500    font-semibold  text-sm sm:text-xl text-wrap text-center  bg-gray-50 rounded-lg     dark:bg-gray-200   " >{link}</a>
                   <button onClick={() => deleteLink(index)} className="ml-2 text-red-600 hover:text-red-900 focus:outline-none">
                     <FaTrash />
                   </button>
                 </div>))
               }
 
-             
+
               <button onClick={addNewIndex} className="my-1 text-center  text-5xl font-bold hover:text-black text-white border-white border  hover:bg-white p-1 rounded-md block mx-auto ">+</button>
               <button onClick={addNewLink} className="my-1 text-center  sm:text-2xl text-lg font-bold hover:text-black text-white border-white border  hover:bg-white p-1 rounded-md block mx-auto ">Paste Link+</button>
             </div>

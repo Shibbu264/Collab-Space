@@ -9,21 +9,15 @@ export default async function POST(req, res) {
   const noteid = body.noteid;
 
   try {
-    const user = await prisma.user.findUnique({
-      where: {
-        id: body.userid ?? ""
-      }
-    });
 
-    // Check if post with the given ID already exists
     const existingPost = await prisma.post.findUnique({
       where: {
         id: noteid
       }
     });
+    console.log("qt",existingPost)
 
     if (existingPost) {
-    
      console.log("inside if")
       res.json({ post: existingPost });
     } 
@@ -34,7 +28,7 @@ export default async function POST(req, res) {
           id: noteid,
           title: "New-note",
           content: [""],
-          authorId: user.id ,
+          authorId: body.userid,
           categories: "",
           links:[""],
           Collaborators:[user.id]

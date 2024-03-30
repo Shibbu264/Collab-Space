@@ -20,7 +20,7 @@ model User {
 model Post {
   id         String       @id @unique 
   title      String
-  content    String[] @default(["Write here !"])
+  content    String[] 
   links   String[]
   authorId   String
   author     User       @relation(fields: [authorId], references: [id])
