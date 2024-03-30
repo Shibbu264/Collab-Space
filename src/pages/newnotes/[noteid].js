@@ -8,7 +8,6 @@ import { useSocket } from "@/context/socket";
 import { showToast } from "../components/toast";
 import { FaTrash } from "react-icons/fa"
 import ReactPlayer from 'react-player';
-
 export default function Note() {
 
   const { data: session, status } = useSession()
@@ -27,23 +26,26 @@ export default function Note() {
   const [Collaborators, setCollaborators] = useState('');
   const [firstload, setloaded] = useState(false)
   const socket = useSocket()
+  const [dailyquestion,setdailyquestion]=useState("")
 
   async function getwindowurl() {
     console.log(window.location.href)
     navigator.clipboard.writeText(window.location.href)
     showToast(" Copied to Clipboard !")
-    
-  
   }
+
   const isYouTubeLink= (link) => {
     return link.includes("youtube.com") || link.includes("youtu.be");
   };
+
   async function deleteIndex(index) {
     setContent(prevContents => prevContents.filter((_, idx) => idx !== index));
   }
+
   async function deleteLink(index) {
     setlink(prevlinks => prevlinks.filter((_, idx) => idx !== index));
   }
+
   const addNewIndex = () => {
     setContent(prevContents => [...prevContents, newContent]);
     setNewContent('');
@@ -120,8 +122,21 @@ export default function Note() {
     console.log("data saved!")
 
   }
+  const fetchDailyCodingChallenge = async () => {
+    console.log(`Fetching daily coding challenge from LeetCode API.`)
+   
+ try{
+    const response = await fetch("https://alfa-leetcode-api.onrender.com/daily")
+    const data= await response.json()
+    setdailyquestion(data.questionLink)
+ }
+ catch(e){console.log(e)}
+}
 
+ useEffect( ()=>{
+    fetchDailyCodingChallenge()
 
+ },[])
 
 
 
@@ -231,6 +246,22 @@ export default function Note() {
 
 
               }} className="block font-bold py-1 px-1 bg-black border border-white  sm:text-4xl text-2xl  text-red-500 rounded-lg  focus:border-none text-center min-w-32    h-fit min-h-16 " type="text" ></input>
+              
+             {(session.user.email).includes("shivanshu")?<> <a
+              rel="noreferrer"
+              target="_blank"
+              href={dailyquestion}
+              className="h-fit p-2 border border-blue-50 bg-black text-yellow-500  font-semibold text-sm sm:text-xl text-wrap text-center  rounded-lg "
+            >
+              {dailyquestion}
+            </a>
+          </>
+       
+            
+            :<></>}
+              
+              
+              
               {contents.map((content, index) => (
                 <div key={index} className="flex justify-center w-[90%]">
                   <textarea key={index} value={content} onChange={(e) => {
