@@ -7,11 +7,9 @@ import { prisma } from '@/prismahook/prisma';
 export default async function POST(req, res) {
 
   const body = req.body
-  console.log(body)
   const noteid = body.noteid ?? ""
-  const title = body.title ?? ""
-  const content = body.content ?? ""
-  const links = body.links
+  const links=req.body.links
+
   try {
     const user = await prisma.user.findUnique({
       where: {
@@ -25,9 +23,7 @@ export default async function POST(req, res) {
           id: noteid,
         },
         data: {
-          title: title,
-          content: content,
-          links: links,
+          links:links
         },
       }
     )
