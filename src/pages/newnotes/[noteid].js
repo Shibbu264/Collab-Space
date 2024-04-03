@@ -13,9 +13,9 @@ export default function Note() {
   const { data: session, status } = useSession()
   const [title, settitle] = useState("Title")
   const [showcontent, setshowcontent] = useState(false)
-  const [newContent, setNewContent] = useState({textContent:"",markedAsImportant:false});
-  const [contents, setContent] = useState([newContent])
+  const [contents, setContent] = useState([])
   const [links, setlink] = useState([])
+  const [newContent, setNewContent] = useState('');
   const [newLink, setNewLink] = useState('');
   const [loader, setloader] = useState(true)
   const router = useRouter()
@@ -75,8 +75,7 @@ export default function Note() {
       if (data.post.Collaborators.includes(session.user.email)) {
         setnoteid(data.post.id)
         settitle(data.post.title)
-        if(data.post.content){setContent(data.post.content)}
-        console.log(contents)
+        setContent(data.post.content)
         setlink(data.post.links)
         setshowcontent(true)
         setloaded(true)
@@ -86,7 +85,7 @@ export default function Note() {
 
     catch (e) {
       alert("Error: " + e)
-      // window.location.replace("/")
+      window.location.replace("/")
     }
   }
   async function addCollaborator() {
@@ -108,56 +107,21 @@ export default function Note() {
       console.log(error)
     }
   }
-  async function updatetitle() {
+  async function savedata() {
 
-    await fetch("/api/savetitle", {
+    await fetch("/api/savedata", {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         noteid: noteid1, userid: session.user.email
-        , title: title
+        , title: title, content: contents, links: links
       })
     })
-    console.log("title updated!")
+    console.log("data saved!")
 
   }
-
-  async function updatelinks() {
-
-    await fetch("/api/updatelink", {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        noteid: noteid1, userid: session.user.email
-        , links:links
-      })
-    })
-    console.log("links updated!")
-
-  }
-
-  async function updatecontent() {
-
-    await fetch("/api/updatecontent", {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        noteid: noteid1, userid: session.user.email
-        , content:(contents[contents.length-1].textContent),
-        important:(contents[contents.length-1].markedAsImportant),
-      })
-    })
-    console.log("Content updated!")
-
-  }
-
-
   const fetchDailyCodingChallenge = async () => {
     console.log(`Fetching daily coding challenge from LeetCode API.`)
    
@@ -176,14 +140,7 @@ export default function Note() {
 
 
 
-  useEffect(() => { if (firstload) { updatetitle()} }, [title])
- 
-  useEffect(()=>{if(isYouTubeLink){}
-else{
-  updatelinks()
-}
-},[links.length])
-
+  useEffect(() => { if (firstload) { savedata() } }, [contents.length, links.length])
   useEffect(() => {
     console.log(socket)
     if (socket) {
@@ -284,6 +241,7 @@ else{
 
                 const value = e.target.value
                 settitle(e.target.value)
+                savedata()
                 socket?.emit('update title', e.target.value)
 
 
@@ -304,15 +262,15 @@ else{
               
               
               
-              {contents?.map((content, index) => (
+              {contents.map((content, index) => (
                 <div key={index} className="flex justify-center w-[90%]">
-                  <textarea key={index} value={content.textContent} onChange={(e) => {
+                  <textarea key={index} value={content} onChange={(e) => {
                     const value = e.target.value;
-                    const updatedContents = {...contents};
-                    updatedContents[index].textContent = value;
+                    const updatedContents = [...contents];
+                    updatedContents[index] = value;
                     setContent(updatedContents); if (value.length <= 10 || value.includes(" ") || value[value.length - 1] === ' ' || value[value.length - 1] === '.') {
-                      updatecontent()
-                      socket?.emit('update content', e.target.value)
+                      savedata()
+                      socket?.emit('update title', e.target.value)
                     }
 
                   }} id="message" className="h-fit p-6 border-8  min-w-[80%] sm:min-h-[80%] w-fit font-semibold  sm:text-2xl text-gray-900 bg-gray-50 rounded-lg  border-blue-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-200" placeholder="Write your thoughts here..."></textarea>
@@ -322,7 +280,7 @@ else{
                 </div>))
               }
 
-{links?.map((link, index) => (
+{links.map((link, index) => (
         <div key={index} className={`flex flex-row w-[90%] items-center justify-center`}>
           {isYouTubeLink(link) ? (
             // Render YouTube player if it's a YouTube video link

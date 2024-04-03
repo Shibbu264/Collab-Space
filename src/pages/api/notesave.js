@@ -23,31 +23,19 @@ export default async function POST(req, res) {
     } 
     else {
    console.log("Inside else")
-   const newPost = await prisma.post.create({
-    data: {
-      id:noteid,
-      title: "Title",
-      authorId: body.userid,
-      categories: "",
-      links: [""],
-      Collaborators: [body.userid],
-      content: {
-        create: [
-          { textContent: "", markedAsImportant: false } 
-        ]
-      },
-      videos: {
-        create: [
-          { link: "", lastwatched: 0 } 
-        ]
-      }
-    },
-    include: {
-      content: true,
-      videos: true
-    }
-  });
-  
+      const newPost = await prisma.post.create({
+        data: {
+          id: noteid,
+          title: "New-note",
+          content: [""],
+          authorId: body.userid,
+          categories: "",
+          links:[""],
+          Collaborators:[body.userid]
+        }
+      });
+
+      console.log(newPost.authorId);
       res.json({ post: newPost });
     }
   } catch (e) {
