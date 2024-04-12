@@ -1,11 +1,10 @@
-import { PrismaClient } from '@prisma/client';
-import { NextResponse } from 'next/server';
 
+import { v4 as uuidv4 } from 'uuid';
 
 import { prisma } from '@/prismahook/prisma';
 // const prisma=new PrismaClient()
 export default async function POST(req, res) {
-
+  const uniqueId = uuidv4();
   const body = req.body
   console.log(body)
   const noteid = body.noteid ?? ""
@@ -27,7 +26,14 @@ export default async function POST(req, res) {
         data: {
           title: title,
           content: content,
-          links: links,
+          links: {
+            deleteMany: {}, 
+            create: links.map(link => ({
+              id:uniqueId,
+              url: link.url,
+              watchedtill: link.watchedtill,
+            })),
+          },
         },
       }
     )

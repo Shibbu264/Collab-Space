@@ -21,11 +21,17 @@ model Post {
   id         String       @id @unique 
   title      String
   content    String[] 
-  links   String[]
+  links   Link[]
   authorId   String
   author     User       @relation(fields: [authorId], references: [id])
   categories String
   Collaborators String[]
 }
 
-
+model Link {
+  id           String  @id @unique // Optional: Add an ID for the link
+  url          String
+  watchedtill  Int
+  post         Post?   @relation(fields: [postId], references: [id])
+  postId       String?
+}

@@ -1,5 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import { NextResponse } from 'next/server';
+import { v4 as uuidv4 } from 'uuid';
+
 
 
 import { prisma } from '@/prismahook/prisma';
@@ -7,12 +9,15 @@ import { prisma } from '@/prismahook/prisma';
 export default async function POST(req, res) {
   const body = req.body;
   const noteid = body.noteid;
-
+  const uniqueId = uuidv4();
   try {
 
     const existingPost = await prisma.post.findUnique({
       where: {
         id: noteid
+      },
+      include: {
+        links: true // Assuming 'links' is the name of the relation
       }
     });
     console.log("qt",existingPost)
@@ -23,6 +28,7 @@ export default async function POST(req, res) {
     } 
     else {
    console.log("Inside else")
+   
       const newPost = await prisma.post.create({
         data: {
           id: noteid,
@@ -30,8 +36,12 @@ export default async function POST(req, res) {
           content: [""],
           authorId: body.userid,
           categories: "",
-          links:[""],
-          Collaborators:[body.userid]
+          Collaborators:[body.userid],
+          links:{create:[{
+            id:uniqueId,
+            url: "",
+            watchedtill:0
+          },]}
         }
       });
 

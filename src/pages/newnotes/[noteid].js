@@ -14,9 +14,10 @@ export default function Note() {
   const [title, settitle] = useState("Title")
   const [showcontent, setshowcontent] = useState(false)
   const [contents, setContent] = useState([])
-  const [links, setlink] = useState([])
+  const [links, setlink] = useState([{link:"",watchedtill:0}])
   const [newContent, setNewContent] = useState('');
   const [newLink, setNewLink] = useState('');
+  const [watchedtill,setwatchedtill]=useState(0)
   const [loader, setloader] = useState(true)
   const router = useRouter()
   const noteid1 = router.query.noteid
@@ -35,7 +36,7 @@ export default function Note() {
   }
 
   const isYouTubeLink= (link) => {
-    return link.includes("youtube.com") || link.includes("youtu.be");
+    return link.url.includes("youtube.com") || link.url.includes("youtu.be");
   };
 
   async function deleteIndex(index) {
@@ -54,7 +55,7 @@ export default function Note() {
     const text = await navigator.clipboard.readText();
     console.log(text)
     setNewLink(text)
-    setlink(prevContents => [...prevContents, text]);
+    setlink(prevContents => [...prevContents, {url:text,watchedtill:watchedtill}]);
   };
 
 
@@ -140,7 +141,7 @@ export default function Note() {
 
 
 
-  useEffect(() => { if (firstload) { savedata() } }, [contents.length, links.length])
+  useEffect(() => { if (firstload) { savedata() } }, [contents.length, links?.length])
   useEffect(() => {
     console.log(socket)
     if (socket) {
@@ -280,20 +281,20 @@ export default function Note() {
                 </div>))
               }
 
-{links.map((link, index) => (
+{links?.map((link, index) => (
         <div key={index} className={`flex flex-row w-[90%] items-center justify-center`}>
           {isYouTubeLink(link) ? (
             // Render YouTube player if it's a YouTube video link
-            <ReactPlayer url={link} controls={true} />
+            <ReactPlayer url={link.url} controls={true} />
           ) : (
             // Render regular link if it's not a YouTube video link
             <a
               rel="noreferrer"
               target="_blank"
-              href={link}
+              href={link.url}
               className="h-fit p-2 border-1 text-blue-500 font-semibold text-sm sm:text-xl text-wrap text-center bg-gray-50 rounded-lg dark:bg-gray-200"
             >
-              {link}
+              {link.url}
             </a>
           )}
           <button onClick={() => deleteLink(index)} className="ml-2 text-red-600 hover:text-red-900 focus:outline-none">
