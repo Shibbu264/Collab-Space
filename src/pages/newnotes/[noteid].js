@@ -55,7 +55,7 @@ export default function Note() {
     const text = await navigator.clipboard.readText();
     console.log(text)
     setNewLink(text)
-    setlink(prevContents => [...prevContents, {url:text,watchedtill:watchedtill}]);
+    setlink(prevContents => [...prevContents, {url:text,watchedtill:0}]);
   };
 
 
@@ -246,7 +246,7 @@ export default function Note() {
                 socket?.emit('update title', e.target.value)
 
 
-              }} className="block font-bold py-1 px-1 bg-black border border-white  sm:text-4xl text-2xl  text-red-500 rounded-lg  focus:border-none text-center min-w-32    h-fit min-h-16 " type="text" ></input>
+              }} className="block font-bold align-middle py-1 px-1 bg-black border border-white  sm:text-4xl text-2xl  text-red-500 rounded-lg  focus:border-none text-center min-w-32    h-fit" type="text" ></input>
               
              {(session.user.email).includes("shivanshu")?<> <a
               rel="noreferrer"
