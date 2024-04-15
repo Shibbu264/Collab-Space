@@ -101,8 +101,20 @@ export default function Note() {
           Collaborator: Collaborators
         })
       })
-      const data = await response.json()
-      showToast(data.message)
+
+      const response2 = await fetch("/api/sendmail", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: Collaborators,
+          url: "https://thought-box-2fkg.vercel.app/newnotes/"+noteid1
+        })
+      })
+    
+      
+      showToast("Succesfully sent collaboration request on mail !")
     }
     catch (error) {
       console.log(error)

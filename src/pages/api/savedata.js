@@ -29,7 +29,7 @@ export default async function POST(req, res) {
           links: {
             deleteMany: {}, 
             create: links.map(link => ({
-              id:uniqueId,
+              id:uuidv4(),
               url: link.url,
               watchedtill: link.watchedtill,
             })),
