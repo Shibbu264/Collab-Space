@@ -8,7 +8,11 @@ import { useSocket } from "@/context/socket";
 import { showToast } from "../components/toast";
 import { FaTrash } from "react-icons/fa"
 import ReactPlayer from 'react-player';
+import { TextField,Paper, IconButton,Typography, Toolbar } from '@mui/material';
+import { AddCircleOutline as AddCircleOutlineIcon, Cancel as CancelIcon, Link as LinkIcon, ArrowBack as ArrowBackIcon } from '@mui/icons-material';
 export default function Note() {
+
+  
 
   const { data: session, status } = useSession()
   const [title, settitle] = useState("Title")
@@ -218,35 +222,43 @@ export default function Note() {
         :
         showcontent ?
           <div className="my-6">
-
-            <div className="flex my-4 sm:text-xl text-sm  justify-center gap-4">
-              {!addoption ? <button onClick={() => setaddoption(true)} className="my-1 hover:text-black text-white border-white border font-semibold hover:bg-white px-4 rounded-md py-2 block ">{'Add friends !'} </button>
-                :
-                <div className="sm:flex flex-col  justify-center gap-[5%]">
-                  <form >
-                    <label for="search" className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
-                    <div className="relative flex justify-between">
-
-                      <input type="search" onChange={(e) => {
-                        setCollaborators(e.target.value)
-
-                      }}
-
-                        value={Collaborators}
-
-                        id="search" className="block min-w-80 p-4  text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Email" required />
-                      <button onClick={addCollaborator} type="button" className="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Add</button>
-                    </div>
-                  </form>
-                  <button onClick={() => setaddoption(false)} className="my-1 hover:text-white text-white w-fit border-white border font-semibold hover:bg-red-500 px-2 rounded-md py-1 block mx-auto ">Cancel </button>
-
-
-                </div>
-              }
-              {!addoption && <><button onClick={getwindowurl} className="my-1 hover:text-white text-white w-fit border-white border font-semibold hover:bg-red-500 px-2 rounded-md py-1 block ">Copy link to notes ! </button>
-                <Link href="/home"> <button className="mt-2 mb-1 hover:text-black text-white border-white border font-semibold hover:bg-white px-4 rounded-md py-2 block ">{'BACK =>'} </button></Link></>}
-            </div>
-
+   <div className="flex justify-center">
+<Toolbar className="flex justify-center my-6 border w-fit margin-auto rounded-lg gap-4">
+      {!addoption ? (
+        <>
+          <IconButton onClick={() => setaddoption(true)} color="primary">
+            <AddCircleOutlineIcon />
+          </IconButton>
+          <IconButton onClick={getwindowurl} color="primary">
+            <LinkIcon />
+          </IconButton>
+          <Link href="/home">
+            <IconButton color="primary">
+              <ArrowBackIcon />
+            </IconButton>
+          </Link>
+        </>
+      ) : (
+        <>
+          <TextField
+            type="search"
+            onChange={(e) => setCollaborators(e.target.value)}
+            value={Collaborators}
+            id="search"
+            className="block min-w-80 p-4 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            placeholder="Email"
+            required
+          />
+          <IconButton onClick={addCollaborator} color="primary">
+            <AddCircleOutlineIcon />
+          </IconButton>
+          <IconButton onClick={() => setaddoption(false)} color="error">
+            <CancelIcon />
+          </IconButton>
+        </>
+      )}
+    </Toolbar>
+    </div>
 
             <div className="flex flex-col  items-center gap-5  justify-center">
               <input value={title} onChange={(e) => {
@@ -277,20 +289,16 @@ export default function Note() {
               
               {contents.map((content, index) => (
                 <div key={index} className="flex justify-center w-[90%]">
-                  <textarea key={index} value={content} onChange={(e) => {
-                    const value = e.target.value;
-                    const updatedContents = [...contents];
-                    updatedContents[index] = value;
-                    setContent(updatedContents); if (value.length <= 10 || value.includes(" ") || value[value.length - 1] === ' ' || value[value.length - 1] === '.') {
-                      savedata()
-                      socket?.emit('update content', e.target.value)
-                    }
+                <textarea key={index} value={content} onChange={(e) => {
+                  const value = e.target.value;
+                  const updatedContents = [...contents];
+                  updatedContents[index] = value;
+                  setContent(updatedContents); if (value.length <= 10 || value.includes(" ") || value[value.length - 1] === ' ' || value[value.length - 1] === '.') {
+                    savedata()
+                    socket?.emit('update content', e.target.value)
+                  }
 
-                  }} id="message" className="h-fit p-6 border-8  min-w-[80%] sm:min-h-[80%] w-fit font-semibold  sm:text-2xl text-gray-900 bg-gray-50 rounded-lg  border-blue-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-200" placeholder="Write your thoughts here..."></textarea>
-                  <button onClick={() => deleteIndex(index)} className="ml-2 text-red-600 hover:text-red-900 focus:outline-none">
-                    <FaTrash />
-                  </button>
-                </div>))
+                }} id="message" className="h-fit p-6 border-8  min-w-[80%] sm:min-h-[80%] w-fit font-semibold  sm:text-2xl text-gray-900 bg-gray-50 rounded-lg  border-blue-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-200" placeholder="Write your thoughts here..."></textarea></div>))
               }
 
 {links?.map((link, index) => (
