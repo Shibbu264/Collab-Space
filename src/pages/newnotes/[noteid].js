@@ -298,7 +298,11 @@ export default function Note() {
                     socket?.emit('update content', e.target.value)
                   }
 
-                }} id="message" className="h-fit p-6 border-8  min-w-[80%] sm:min-h-[80%] w-fit font-semibold  sm:text-2xl text-gray-900 bg-gray-50 rounded-lg  border-blue-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-200" placeholder="Write your thoughts here..."></textarea></div>))
+                }} id="message" className="h-fit p-6 border-8  min-w-[80%] sm:min-h-[80%] w-fit font-semibold  sm:text-2xl text-gray-900 bg-gray-50 rounded-lg  border-blue-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-200" placeholder="Write your thoughts here..."></textarea>
+                 <button onClick={() => deleteIndex(index)} className="ml-2 text-red-600 hover:text-red-900 focus:outline-none">
+                    <FaTrash />
+                  </button>
+                </div>))
               }
 
 {links?.map((link, index) => (
