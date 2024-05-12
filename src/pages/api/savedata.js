@@ -32,6 +32,7 @@ export default async function POST(req, res) {
               id:uuidv4(),
               url: link.url,
               watchedtill: link.watchedtill,
+              important:link.important
             })),
           },
         },

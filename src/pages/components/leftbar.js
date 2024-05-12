@@ -1,10 +1,11 @@
 
 import DeleteIcon from '@mui/icons-material/Delete';
-import { SessionContext, signOut } from 'next-auth/react';
+import {  signOut } from 'next-auth/react';
 import Link from 'next/link';
-
-export default function Leftbar ({session,user,deleteNote,setUser}){
-
+import IconButton from '@mui/material/IconButton';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import { Button } from '@mui/material';
+export default function Leftbar ({session,user,setOpen,setUser,setNoteId}){
 return ( <div>
     {user?.profilepic && (
       <div className='sm:flex sm:justify-start sm:items-start    items-center flex-col'>
@@ -19,9 +20,8 @@ return ( <div>
               </Link>
               <button
                 onClick={() => {
-                  deleteNote(post.id);
-                  const updatedPosts = user.posts?.filter((posti) => posti.id !== post.id) ?? [];
-                  setUser({ ...user, posts: updatedPosts });
+                  setOpen(true)
+                  setNoteId(post.id)
                 }}
               >
                 <DeleteIcon className='cursor-pointer hover:text-red-500' />
@@ -29,13 +29,17 @@ return ( <div>
              
             </div>
           ))}
+               <Button
+  variant="contained"
+  color="primary"
+  size="large"
+  onClick={() => signOut().then(() => window.location.replace('/signin'))}
+  startIcon={<ExitToAppIcon />}
+>
+  Sign out
+</Button>
         </ul>
-        <button
-                className=' my-3 ml-[2%] max-sm:block max-sm:mx-auto max-sm:mt-10 bg-black text-white-500 hover:text-black border  hover:bg-white px-2 h-12 rounded-xl'
-                onClick={() => signOut().then(() => window.location.replace('/signin'))}
-              >
-                Sign out
-              </button>
+   
       </div>
     )}
     </div>)

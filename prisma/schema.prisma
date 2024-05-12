@@ -25,6 +25,7 @@ model Post {
   authorId   String
   author     User       @relation(fields: [authorId], references: [id])
   categories String
+  important  Boolean   @default(false)
   Collaborators String[]
 }
 
@@ -34,4 +35,5 @@ model Link {
   watchedtill  Int
   post         Post?   @relation(fields: [postId], references: [id])
   postId       String?
+  important  Boolean   @default(false)
 }

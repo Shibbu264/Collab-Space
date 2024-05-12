@@ -8,13 +8,17 @@ import { useSocket } from "@/context/socket";
 import { showToast } from "../components/toast";
 import { FaTrash } from "react-icons/fa"
 import ReactPlayer from 'react-player';
-import { TextField, Paper, IconButton, Typography, Toolbar } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@mui/material';
+import { TextField, Paper, IconButton, Toolbar } from '@mui/material';
 import { AddCircleOutline as AddCircleOutlineIcon, Cancel as CancelIcon, Link as LinkIcon, ArrowBack as ArrowBackIcon } from '@mui/icons-material';
 export default function Note() {
 
 
 
   const { data: session, status } = useSession()
+  const [editing, setEditing] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [noteIdToDelete, setNoteIdToDelete] = useState('');
   const [title, settitle] = useState("Title")
   const [showcontent, setshowcontent] = useState(false)
   const [contents, setContent] = useState([])
@@ -41,6 +45,21 @@ export default function Note() {
     showToast(" Copied to Clipboard !")
   }
 
+  const toggleImportance = (index, type) => {
+    if (type === 'content') {
+      const updatedContents = [...contents];
+      updatedContents[index].important = !updatedContents[index].important;
+      console.log(updatedContents[index].important)
+      setContent(updatedContents);
+    } else if (type === 'link') {
+      const updatedLinks = [...links];
+      updatedLinks[index].important = !updatedLinks[index].important;
+      updatedLinks[index].important
+      setlink(updatedLinks);
+    }
+  };
+  
+
   const isYouTubeLink = (link,index) => {
     if (links[index].url.includes("list=") && !links[index].url.includes("&index=")) {
       const updatedLinks = [...links];
@@ -56,6 +75,7 @@ export default function Note() {
 
   async function deleteLink(index) {
     setlink(prevlinks => prevlinks.filter((_, idx) => idx !== index));
+    setOpen(false)
   }
 
   const addNewIndex = () => {
@@ -175,7 +195,7 @@ export default function Note() {
 
 
 
-  useEffect(() => { if (firstload) { savedata() } }, [contents.length, links?.length])
+  useEffect(() => { if (firstload) { savedata() } }, [contents.length, links])
   useEffect(() => {
     console.log(socket)
     if (socket) {
@@ -279,16 +299,18 @@ export default function Note() {
             </div>
 
             <div className="flex flex-col  items-center gap-5  justify-center">
-              <input value={title} onChange={(e) => {
-
-
-                const value = e.target.value
+             {editing?<div className="flex  gap-6"> <input  value={title} onChange={(e) => {
                 settitle(e.target.value)
-                savedata()
                 socket?.emit('update title', e.target.value)
 
-
-              }} className="block font-bold align-middle py-1 px-1 bg-black border border-white  sm:text-4xl text-2xl  text-red-500 rounded-lg  focus:border-none text-center min-w-32    h-fit" type="text" ></input>
+              }} className="block    h-fit  overflow-hidden font-bold  py-3 px-1 bg-black border border-white  sm:text-4xl text-2xl  text-red-500 rounded-lg  focus:border-none text-center min-w-32 " type="text" ></input>
+              <Button onClick={()=>{setEditing(false) ;savedata()}} variant="contained" color="primary">
+            Save
+          </Button>
+          </div>
+              
+              :
+               <h1 onClick={()=>{setEditing(true)}}  className="block    h-fit  overflow-hidden font-bold  py-3 px-6 bg-black border border-white  sm:text-4xl text-2xl  text-red-500 rounded-lg  focus:border-none text-center min-w-32 " type="text" >{title}</h1>}
 
               {(session.user.email).includes("shivanshu") ? <> <a
                 rel="noreferrer"
@@ -303,7 +325,21 @@ export default function Note() {
 
                 : <></>}
 
-
+<Dialog open={open} onClose={() => setOpen(false)}>
+            <DialogTitle sx={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#000' }}>Confirm Delete</DialogTitle>
+            <DialogContent>
+              <p className='text-xl font-semibold'>Are you sure you want to delete this note?</p>
+            </DialogContent>
+            <DialogActions>
+              <Button variant="contained"
+  color="info"  onClick={() => setOpen(false)}>Cancel</Button>
+              <Button  variant="contained"
+  color="error"
+   onClick={() => { deleteLink(noteIdToDelete) }} autoFocus>
+                Delete
+              </Button>
+            </DialogActions>
+          </Dialog>
 
               {contents.map((content, index) => (
                 <div key={index} className="flex justify-center w-[90%]">
@@ -320,6 +356,9 @@ export default function Note() {
                   <button onClick={() => deleteIndex(index)} className="ml-2 text-red-600 hover:text-red-900 focus:outline-none">
                     <FaTrash />
                   </button>
+                  {/* <button onClick={() => toggleImportance(index, 'content')} className={`ml-2 ${content.important ? 'text-blue-600' : 'text-gray-600'} hover:text-blue-900 focus:outline-none`}>
+      {content.important ? 'Marked as Important' : 'Mark as Important'}
+    </button> */}
                 </div>))
               }
 
@@ -346,9 +385,14 @@ export default function Note() {
                       {link.url}
                     </a>
                   )}
-                  <button onClick={() => deleteLink(index)} className="ml-2 text-red-600 hover:text-red-900 focus:outline-none">
+                  <div className="gap-6 flex">
+                  <button onClick={() =>{if(link.important){setOpen(true);setNoteIdToDelete(index)}else{ deleteLink(index)}}} className="ml-2 text-red-600 hover:text-red-900 focus:outline-none">
                     <FaTrash />
                   </button>
+                  <Button variant={link.important?`contained`:`outlined`} onClick={() => toggleImportance(index, 'link')} className={`ml-2 ${link.important ? 'text-blue-600' : 'text-gray-600'} hover:text-blue-900 focus:outline-none`}>
+      {link.important ? 'Marked as Important' : 'Mark as Important'}
+    </Button >
+    </div>
                 </div>
               ))}
 

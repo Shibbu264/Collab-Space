@@ -17,7 +17,7 @@ export default async function POST(req, res) {
         id: noteid
       },
       include: {
-        links: true // Assuming 'links' is the name of the relation
+        links: true 
       }
     });
     console.log("qt",existingPost)
