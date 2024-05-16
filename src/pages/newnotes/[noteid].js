@@ -61,11 +61,11 @@ export default function Note() {
   
 
   const isYouTubeLink = (link,index) => {
-    if (links[index].url.includes("list=") && !links[index].url.includes("&index=")) {
-      const updatedLinks = [...links];
-      updatedLinks[index].url += `&index=${currentindex}&t=${currentTime}s`
-      setlink(updatedLinks);
-    }
+    // if (links[index].url.includes("list=") && !links[index].url.includes("&index=")) {
+    //   const updatedLinks = [...links];
+    //   updatedLinks[index].url += `&index=${currentindex}&t=${currentTime}s`
+    //   setlink(updatedLinks);
+    // }
     return link.url.includes("youtube.com") || link.url.includes("youtu.be");
   };
 
@@ -366,14 +366,7 @@ export default function Note() {
                 <div key={index} className={`flex flex-row w-[90%] items-center justify-center`}>
                   {isYouTubeLink(link,index) ? (
 
-                    <ReactPlayer url={link.url} onPause={async () => {
-                      if (links[index].url.includes("&list=")) {
-                        const updatedLinks = [...links];
-                        const currentTime = playerRefs.current[index].getCurrentTime();
-                        setcurrenttime(currentTime)
-                        setlink(updatedLinks)
-                      }
-                    }} ref={(player) => (playerRefs.current[index] = player)} onEnded={() => { console.log("VideoEnded Bc!") }} controls={true} startTime={link.watchedtill} onProgress={(progress) => handleProgress(progress, index)} />
+                    <ReactPlayer url={link.url}  ref={(player) => (playerRefs.current[index] = player)} onEnded={() => { console.log("VideoEnded Bc!") }} controls={true} startTime={link.watchedtill} onProgress={(progress) => handleProgress(progress, index)} />
                   ) : (
 
                     <a
