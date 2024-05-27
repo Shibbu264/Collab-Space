@@ -25,7 +25,6 @@ export default function Note() {
   const [links, setlink] = useState([{ link: "", watchedtill: 0 }])
   const [newContent, setNewContent] = useState('');
   const [newLink, setNewLink] = useState('');
-  const [watchedtill, setwatchedtill] = useState(0)
   const [loader, setloader] = useState(true)
   const router = useRouter()
   const noteid1 = router.query.noteid
@@ -37,8 +36,6 @@ export default function Note() {
   const socket = useSocket()
   const [dailyquestion, setdailyquestion] = useState("")
   const playerRefs = useRef([]);
-  const [currentindex,setindex]=useState(4)
-  const [currentTime,setcurrenttime]=useState(0)
   async function getwindowurl() {
     console.log(window.location.href)
     navigator.clipboard.writeText(window.location.href)
