@@ -1,12 +1,13 @@
 "use client"
 import Image from 'next/image';
 import { useSession } from 'next-auth/react';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { v4 as uuid } from 'uuid';
 import Link from 'next/link';
 import { Hearts } from 'react-loader-spinner'
 import Leftbar from './components/leftbar';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@mui/material';
+import { PostContext } from '@/context/getPosts';
 
 const Home1 = () => {
   interface Post {
@@ -23,6 +24,7 @@ const Home1 = () => {
   const [noteIdToDelete, setNoteIdToDelete] = useState<string>('');
   const { data: session, status } = useSession();
   const [user, setUser] = useState<User | null>(null);
+  const [CollabPosts,setCollabPosts]=useState<Post[] | null>(null)
   const unique_id = uuid().slice(0, 8);
   const [loading, setLoading] = useState(true)
   const [value, setvalue] = useState(true)
@@ -54,8 +56,9 @@ const Home1 = () => {
         alert(data.message.name + "  Please Refresh!");
       }
       else {
-        console.log(data.user.posts);
+        console.log(data);
         setUser(data.user);
+        setCollabPosts(data.collaboratedPosts)
       }
       setLoading(false)
     }
@@ -106,7 +109,7 @@ const Home1 = () => {
             </label></div><span className={value ? 'ml-6 text-xl text-white font-semibold  ' : ' ml-6 text-xl text-[#52df54] font-semibold  '}>View notes!</span>
           </div>
 
-          {value ? <div className='max-sm:hidden'><Leftbar session={session} user={user} setOpen={setOpen} setNoteId={setNoteIdToDelete} setUser={setUser} /></div> : <></>}
+          {value ? <div className='max-sm:hidden'><Leftbar collabposts={CollabPosts} user={user} setOpen={setOpen} setNoteId={setNoteIdToDelete} /></div> : <></>}
           {value ?
 
 
@@ -122,7 +125,7 @@ const Home1 = () => {
                 </Link>
               </div>
 
-            </div> : <Leftbar session={session} user={user} setNoteId={setNoteIdToDelete} setOpen={setOpen} setUser={setUser} />
+            </div> : <Leftbar user={user} collabposts={CollabPosts} setNoteId={setNoteIdToDelete} setOpen={setOpen}  />
           }
           <Dialog open={open} onClose={() => setOpen(false)}>
             <DialogTitle sx={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#000' }}>Confirm Delete</DialogTitle>

@@ -11,6 +11,8 @@ import ReactPlayer from 'react-player';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@mui/material';
 import { TextField, Paper, IconButton, Toolbar } from '@mui/material';
 import { AddCircleOutline as AddCircleOutlineIcon, Cancel as CancelIcon, Link as LinkIcon, ArrowBack as ArrowBackIcon } from '@mui/icons-material';
+import { TextareaAutosize } from '@mui/base/TextareaAutosize';
+
 export default function Note() {
 
 
@@ -280,7 +282,7 @@ export default function Note() {
                       onChange={(e) => setCollaborators(e.target.value)}
                       value={Collaborators}
                       id="search"
-                      className="block min-w-80 p-4 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                      className="block min-w-80 p-4 text-sm text-white border border-gray-300 rounded-lg bg-gray-50  focus:border-blue-500 dark:bg-gray-600   dark:focus:ring-blue-500 dark:focus:border-blue-500"
                       placeholder="Email"
                       required
                     />
@@ -340,7 +342,7 @@ export default function Note() {
 
               {contents.map((content, index) => (
                 <div key={index} className="flex justify-center w-[90%]">
-                  <textarea key={index} value={content} onChange={(e) => {
+                  <TextareaAutosize minRows={2}  key={index} value={content} onChange={(e) => {
                     const value = e.target.value;
                     const updatedContents = [...contents];
                     updatedContents[index] = value;
@@ -349,13 +351,11 @@ export default function Note() {
                       socket?.emit('update content', e.target.value)
                     }
 
-                  }} id="message" className="h-fit p-6 border-8  min-w-[80%] sm:min-h-[80%] w-fit font-semibold  sm:text-2xl text-gray-900 bg-gray-50 rounded-lg  border-blue-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-200" placeholder="Write your thoughts here..."></textarea>
+                  }} id="message" className="py-1 rounded-3xl px-6 border-8  min-w-[80%] w-fit font-semibold  sm:text-2xl text-gray-900 bg-gray-50  border-blue-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-200" placeholder="Write your thoughts here..."></TextareaAutosize >
                   <button onClick={() => deleteIndex(index)} className="ml-2 text-red-600 hover:text-red-900 focus:outline-none">
                     <FaTrash />
                   </button>
-                  {/* <button onClick={() => toggleImportance(index, 'content')} className={`ml-2 ${content.important ? 'text-blue-600' : 'text-gray-600'} hover:text-blue-900 focus:outline-none`}>
-      {content.important ? 'Marked as Important' : 'Mark as Important'}
-    </button> */}
+
                 </div>))
               }
 

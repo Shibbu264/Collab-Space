@@ -21,11 +21,36 @@ export default  async function POST(
               id:body.email,
             },
             include: {
-              posts: true,
+              posts: {
+                select: {
+                  id: true,
+                  title: true,
+                },
+              },
+            },
+          });
+          const collaboratedPosts = await prisma.post.findMany({
+            where: {
+              AND: [
+                {
+                  Collaborators: {
+                    has: body.email
+                  }
+                },
+                {
+                  authorId: {
+                    not: body.email
+                  }
+                }
+              ]
+            },
+            select: {
+              id: true,
+              title: true,
             },
           });
          
-        res.json({user});
+        res.json({user,collaboratedPosts});
        
       } catch (error) {
         
