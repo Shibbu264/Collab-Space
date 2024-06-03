@@ -2,16 +2,16 @@
 import { useEffect, useRef, useState } from "react"
 import { useSession } from 'next-auth/react';
 import { Hearts } from "react-loader-spinner";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { useSocket } from "@/context/socket";
 import { showToast } from "../components/toast";
 import { FaTrash } from "react-icons/fa"
 import ReactPlayer from 'react-player';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@mui/material';
-import { TextField, Paper, IconButton, Toolbar } from '@mui/material';
-import { AddCircleOutline as AddCircleOutlineIcon, Cancel as CancelIcon, Link as LinkIcon, ArrowBack as ArrowBackIcon } from '@mui/icons-material';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Drawer, IconButton, Select, TextField } from '@mui/material';
 import { TextareaAutosize } from '@mui/base/TextareaAutosize';
+import WatchParty from "../components/watchparty";
+import Toolbar from "../components/toolbar"
+import { Clear, Close, Done, PlayCircle, ResetTvRounded, ResetTvTwoTone, RestoreFromTrash } from "@mui/icons-material";
 
 export default function Note() {
 
@@ -30,6 +30,7 @@ export default function Note() {
   const [loader, setloader] = useState(true)
   const router = useRouter()
   const noteid1 = router.query.noteid
+  const [groupwatchsession, setgroupsession] = useState(false)
   const [Noteidaftersaving, setnoteid] = useState("")
   const [addoption, setaddoption] = useState(false)
   const ab = useRef(false)
@@ -38,6 +39,9 @@ export default function Note() {
   const socket = useSocket()
   const [dailyquestion, setdailyquestion] = useState("")
   const playerRefs = useRef([]);
+  const [draweropen,setdraweropen]=useState(false)
+  const [movieurl,setmovieurl]=useState('https://www.youtube.com/watch?v=dQw4w9WgXcQ')
+
   async function getwindowurl() {
     console.log(window.location.href)
     navigator.clipboard.writeText(window.location.href)
@@ -57,14 +61,9 @@ export default function Note() {
       setlink(updatedLinks);
     }
   };
-  
 
-  const isYouTubeLink = (link,index) => {
-    // if (links[index].url.includes("list=") && !links[index].url.includes("&index=")) {
-    //   const updatedLinks = [...links];
-    //   updatedLinks[index].url += `&index=${currentindex}&t=${currentTime}s`
-    //   setlink(updatedLinks);
-    // }
+
+  const isYouTubeLink = (link, index) => {
     return link.url.includes("youtube.com") || link.url.includes("youtu.be");
   };
 
@@ -158,7 +157,7 @@ export default function Note() {
     updatedLinks[index].watchedtill = lastPlayedSeconds;
     setlink(updatedLinks);
     console.log(links[index].url)
-    
+
   };
 
   async function savedata() {
@@ -258,139 +257,157 @@ export default function Note() {
         </div>
         :
         showcontent ?
-          <div className="my-6">
-            <div className="flex justify-center">
-              <Toolbar className="flex justify-center my-6 border w-fit margin-auto rounded-lg gap-4">
-                {!addoption ? (
-                  <>
-                    <IconButton onClick={() => setaddoption(true)} color="primary">
-                      <AddCircleOutlineIcon />
-                    </IconButton>
-                    <IconButton onClick={getwindowurl} color="primary">
-                      <LinkIcon />
-                    </IconButton>
-                    <Link href="/home">
-                      <IconButton color="primary">
-                        <ArrowBackIcon />
-                      </IconButton>
-                    </Link>
-                  </>
-                ) : (
-                  <>
-                    <TextField
-                      type="search"
-                      onChange={(e) => setCollaborators(e.target.value)}
-                      value={Collaborators}
-                      id="search"
-                      className="block min-w-80 p-4 text-sm text-white border border-gray-300 rounded-lg bg-gray-50  focus:border-blue-500 dark:bg-gray-600   dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                      placeholder="Email"
-                      required
-                    />
-                    <IconButton onClick={addCollaborator} color="primary">
-                      <AddCircleOutlineIcon />
-                    </IconButton>
-                    <IconButton onClick={() => setaddoption(false)} color="error">
-                      <CancelIcon />
-                    </IconButton>
-                  </>
-                )}
-              </Toolbar>
-            </div>
-
-            <div className="flex flex-col  items-center gap-5  justify-center">
-             {editing?<div className="flex  gap-6"> <input  value={title} onChange={(e) => {
-                settitle(e.target.value)
-                socket?.emit('update title', e.target.value)
-
-              }} className="block    h-fit  overflow-hidden font-bold  py-3 px-1 bg-black border border-white  sm:text-4xl text-2xl  text-red-500 rounded-lg  focus:border-none text-center min-w-32 " type="text" ></input>
-              <Button onClick={()=>{setEditing(false) ;savedata()}} variant="contained" color="primary">
-            Save
-          </Button>
-          </div>
-              
-              :
-               <h1 onClick={()=>{setEditing(true)}}  className="block    h-fit  overflow-hidden font-bold  py-3 px-6 bg-black border border-white  sm:text-4xl text-2xl  text-red-500 rounded-lg  focus:border-none text-center min-w-32 " type="text" >{title}</h1>}
-
-              {(session.user.email).includes("shivanshu") ? <> <a
-                rel="noreferrer"
-                target="_blank"
-                href={dailyquestion}
-                className="h-fit p-2 border border-blue-50 bg-black text-yellow-500  font-semibold text-sm sm:text-xl text-wrap text-center  rounded-lg "
-              >
-                {dailyquestion}
-              </a>
-              </>
+          (!groupwatchsession ?
+            <div className="my-6 max-sm:px-6 max-sm:flex max-sm:w-[100%] max-sm:justify-center">
 
 
-                : <></>}
+              <Toolbar addCollaborator={addCollaborator} setgroupsession={setgroupsession} groupwatchsession={groupwatchsession} setCollaborators={setCollaborators} addoption={addoption} setaddoption={setaddoption} Collaborators={Collaborators} getwindowurl={getwindowurl} />
 
-<Dialog open={open} onClose={() => setOpen(false)}>
-            <DialogTitle sx={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#000' }}>Confirm Delete</DialogTitle>
-            <DialogContent>
-              <p className='text-xl font-semibold'>Are you sure you want to delete this note?</p>
-            </DialogContent>
-            <DialogActions>
-              <Button variant="contained"
-  color="info"  onClick={() => setOpen(false)}>Cancel</Button>
-              <Button  variant="contained"
-  color="error"
-   onClick={() => { deleteLink(noteIdToDelete) }} autoFocus>
-                Delete
-              </Button>
-            </DialogActions>
-          </Dialog>
 
-              {contents.map((content, index) => (
-                <div key={index} className="flex justify-center w-[90%]">
-                  <TextareaAutosize minRows={2}  key={index} value={content} onChange={(e) => {
-                    const value = e.target.value;
-                    const updatedContents = [...contents];
-                    updatedContents[index] = value;
-                    setContent(updatedContents); if (value.length <= 10 || value.includes(" ") || value[value.length - 1] === ' ' || value[value.length - 1] === '.') {
-                      savedata()
-                      socket?.emit('update content', e.target.value)
-                    }
+              <div className="flex flex-col  items-center gap-6 sm:gap-5  justify-center">
+                {editing ? <div className="flex  gap-6"> <input value={title} onChange={(e) => {
+                  settitle(e.target.value)
+                  socket?.emit('update title', e.target.value)
 
-                  }} id="message" className="py-1 rounded-3xl px-6 border-8  min-w-[80%] w-fit font-semibold  sm:text-2xl text-gray-900 bg-gray-50  border-blue-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-200" placeholder="Write your thoughts here..."></TextareaAutosize >
-                  <button onClick={() => deleteIndex(index)} className="ml-2 text-red-600 hover:text-red-900 focus:outline-none">
-                    <FaTrash />
-                  </button>
-
-                </div>))
-              }
-
-              {links?.map((link, index) => (
-                <div key={index} className={`flex flex-row w-[90%] items-center justify-center`}>
-                  {isYouTubeLink(link,index) ? (
-
-                    <ReactPlayer url={link.url}  ref={(player) => (playerRefs.current[index] = player)} onEnded={() => { console.log("VideoEnded Bc!") }} controls={true} startTime={link.watchedtill} onProgress={(progress) => handleProgress(progress, index)} />
-                  ) : (
-
-                    <a
-                      rel="noreferrer"
-                      target="_blank"
-                      href={link.url}
-                      className="h-fit p-2 border-1 text-blue-500 font-semibold text-sm sm:text-xl text-wrap text-center bg-gray-50 rounded-lg dark:bg-gray-200"
-                    >
-                      {link.url}
-                    </a>
-                  )}
-                  <div className="gap-6 flex">
-                  <button onClick={() =>{if(link.important){setOpen(true);setNoteIdToDelete(index)}else{ deleteLink(index)}}} className="ml-2 text-red-600 hover:text-red-900 focus:outline-none">
-                    <FaTrash />
-                  </button>
-                  <Button variant={link.important?`contained`:`outlined`} onClick={() => toggleImportance(index, 'link')} className={`ml-2 ${link.important ? 'text-blue-600' : 'text-gray-600'} hover:text-blue-900 focus:outline-none`}>
-      {link.important ? 'Marked as Important' : 'Mark as Important'}
-    </Button >
-    </div>
+                }} className="block    h-fit  overflow-hidden font-bold  py-3 px-1 bg-black border border-white  sm:text-4xl text-2xl  text-red-500 rounded-lg  focus:border-none text-center min-w-32 " type="text" ></input>
+                  <Button onClick={() => { setEditing(false); savedata() }} variant="contained" color="primary">
+                    Save
+                  </Button>
                 </div>
-              ))}
+
+                  :
+                  <h1 onClick={() => { setEditing(true) }} className="block    h-fit  overflow-hidden font-bold  py-3 px-6 bg-black border border-white  sm:text-4xl text-2xl  text-red-500 rounded-lg  focus:border-none text-center min-w-32 " type="text" >{title}</h1>}
+
+                {(session.user.email).includes("shivanshu") ? <> <a
+                  rel="noreferrer"
+                  target="_blank"
+                  href={dailyquestion}
+                  className="h-fit p-2 border border-blue-50 bg-black text-yellow-500  font-semibold text-sm sm:text-xl text-wrap text-center  rounded-lg "
+                >
+                  {dailyquestion}
+                </a>
+                </>
 
 
-              <button onClick={addNewIndex} className="my-1 text-center  text-5xl font-bold hover:text-black text-white border-white border  hover:bg-white p-1 rounded-md block mx-auto ">+</button>
-              <button onClick={addNewLink} className="my-1 text-center  sm:text-2xl text-lg font-bold hover:text-black text-white border-white border  hover:bg-white p-1 rounded-md block mx-auto ">Paste Link+</button>
+                  : <></>}
+
+                <Dialog open={open} onClose={() => setOpen(false)}>
+                  <DialogTitle sx={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#000' }}>Confirm Delete</DialogTitle>
+                  <DialogContent>
+                    <p className='text-xl font-semibold'>Are you sure you want to delete this note?</p>
+                  </DialogContent>
+                  <DialogActions>
+                    <Button variant="contained"
+                      color="info" onClick={() => setOpen(false)}>Cancel</Button>
+                    <Button variant="contained"
+                      color="error"
+                      onClick={() => { deleteLink(noteIdToDelete) }} autoFocus>
+                      Delete
+                    </Button>
+                  </DialogActions>
+                </Dialog>
+
+
+
+                {contents.map((content, index) => (
+                  <div key={index} className="flex justify-center w-[90%]">
+                    <TextareaAutosize minRows={2} key={index} value={content} onChange={(e) => {
+                      const value = e.target.value;
+                      const updatedContents = [...contents];
+                      updatedContents[index] = value;
+                      setContent(updatedContents); if (value.length <= 10 || value.includes(" ") || value[value.length - 1] === ' ' || value[value.length - 1] === '.') {
+                        savedata()
+                        socket?.emit('update content', e.target.value)
+                      }
+
+                    }} id="message" className="py-1 rounded-3xl px-6 border-8  min-w-[80%] w-fit font-semibold  sm:text-2xl text-gray-900 bg-gray-50  border-blue-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-200" placeholder="Write your thoughts here..."></TextareaAutosize >
+                    <button onClick={() => deleteIndex(index)} className="ml-2 text-red-600 hover:text-red-900 focus:outline-none">
+                      <FaTrash />
+                    </button>
+
+                  </div>))
+                }
+
+                {links?.map((link, index) => (
+                  <div key={index} className={`flex flex-row w-[80%] sm:w-[90%] items-center justify-center`}>
+                    {isYouTubeLink(link, index) ? (
+
+                      <ReactPlayer url={link.url} ref={(player) => (playerRefs.current[index] = player)} onEnded={() => { console.log("VideoEnded Bc!") }} controls={true} startTime={link.watchedtill} onProgress={(progress) => handleProgress(progress, index)} />
+                    ) : (
+
+                      <a
+                        rel="noreferrer"
+                        target="_blank"
+                        href={link.url}
+                        className="h-fit p-2 max-sm:w-fit border-1 text-blue-500 font-semibold text-sm sm:text-xl sm:text-wrap text-center bg-gray-50 rounded-lg dark:bg-gray-200"
+                      >
+                        {link.url}
+                      </a>
+                    )}
+                    <div className="gap-6 hidden sm:flex">
+                      <button onClick={() => { if (link.important) { setOpen(true); setNoteIdToDelete(index) } else { deleteLink(index) } }} className="ml-2 text-red-600 hover:text-red-900 focus:outline-none">
+                        <FaTrash />
+                      </button>
+                      <Button variant={link.important ? `contained` : `outlined`} onClick={() => toggleImportance(index, 'link')} className={`ml-2 ${link.important ? 'text-blue-600' : 'text-gray-600'} hover:text-blue-900 focus:outline-none`}>
+                        {link.important ? 'Marked as Important' : 'Mark as Important'}
+                      </Button >
+                    </div>
+                  </div>
+                ))}
+
+
+                <button onClick={addNewIndex} className="my-1 text-center  text-5xl font-bold hover:text-black text-white border-white border  hover:bg-white p-1 rounded-md block mx-auto ">+</button>
+                <button onClick={addNewLink} className="my-1 text-center  sm:text-2xl text-lg font-bold hover:text-black text-white border-white border  hover:bg-white p-1 rounded-md block mx-auto ">Paste Link+</button>
+              </div>
+            </div> :
+            <div className="flex flex-col items-center">
+              <Toolbar draweropen={draweropen} setdraweropen={setdraweropen} addCollaborator={addCollaborator} setgroupsession={setgroupsession} groupwatchsession={groupwatchsession} setCollaborators={setCollaborators} addoption={addoption} setaddoption={setaddoption} Collaborators={Collaborators} getwindowurl={getwindowurl} />
+              <WatchParty movieurl={movieurl} setmovieurl={setmovieurl} />
+              <Drawer anchor="right" open={draweropen}>
+                <IconButton color="error" onClick={()=>{setdraweropen(false)}}>
+                  <Close/>
+                </IconButton>
+              <div  className={`flex flex-col px-10 py-4 w-[90%]  items-center justify-center`}>
+
+              <div className="flex justify-center w-[90%]">
+          <TextField
+            sx={{
+              minWidth:"80%"
+            }}
+            type="search"
+            onChange={(e) => setmovieurl(e.target.value)}
+            value={movieurl}
+            id="search"
+           
+            placeholder="Paste video link "
+         
+          />
+          <IconButton onClick={()=>{setmovieurl("")}} color="primary">
+            <Clear/>
+          </IconButton>
+          </div>
+          <h3>Paste Video Link here !</h3>
+
+          <div  className={`flex flex-col px-10 py-5 w-[90%] gap-y-12 items-center justify-center`}>
+                {links?.map((link, index) => (
+                 <>
+                    {isYouTubeLink(link, index) ? (
+                      <div className="flex flex-2">
+                        <ReactPlayer controls={false}  key={index} width={360} height={240} url={link.url} paused={true} />
+                        <IconButton onClick={()=>{setmovieurl(link.url)}} color={link.url==movieurl?"error":"info"}>
+                          <PlayCircle/>
+                        </IconButton>
+                      </div>
+                    ) : null}
+                  </>
+              
+                ))}
+                </div>
+                </div>
+
+              </Drawer>
             </div>
-          </div> : <h1 className="red-500 text-3xl flex justify-center my-[10%] ">
+          ) : <h1 className="red-500 text-3xl flex justify-center my-[10%] ">
             Access to this note is restricted! Contact the Author !
           </h1>
       }
