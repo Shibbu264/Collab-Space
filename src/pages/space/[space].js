@@ -4,13 +4,13 @@ import { useSession } from 'next-auth/react';
 import { Hearts } from "react-loader-spinner";
 import { useRouter } from "next/router";
 import { useSocket } from "@/context/socket";
-import { showToast } from "../components/toast";
+import { showToast } from "../../components/toast";
 import { FaTrash } from "react-icons/fa"
 import ReactPlayer from 'react-player';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Drawer, IconButton, Select, TextField } from '@mui/material';
 import { TextareaAutosize } from '@mui/base/TextareaAutosize';
-import WatchParty from "../components/watchparty";
-import Toolbar from "../components/toolbar"
+import WatchParty from "../../components/watchparty";
+import Toolbar from "../../components/toolbar"
 import { Clear, Close, Done, PlayCircle, ResetTvRounded, ResetTvTwoTone, RestoreFromTrash } from "@mui/icons-material";
 
 export default function Note() {
