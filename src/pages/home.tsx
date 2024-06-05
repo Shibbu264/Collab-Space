@@ -5,7 +5,7 @@ import { useContext, useEffect, useState } from 'react';
 import { v4 as uuid } from 'uuid';
 import Link from 'next/link';
 import { Hearts } from 'react-loader-spinner'
-import Leftbar from './components/leftbar';
+import Leftbar from '../components/leftbar';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@mui/material';
 import { PostContext } from '@/context/getPosts';
 
