@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { styled } from '@mui/system';
 import { IconButton, Paper, TextField } from '@mui/material';
 import { MessageLeft, MessageRight } from "./message";
-import { useSocket } from "../../context/socket";
+import { useSocket } from "../context/socket";
 import { useSession } from 'next-auth/react';
 import { Send } from "@mui/icons-material";
 import { useRouter } from "next/router";

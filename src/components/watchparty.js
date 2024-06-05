@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { useSocket } from '../../context/socket';
+import { useSocket } from '../context/socket';
 import ReactPlayer from 'react-player';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
