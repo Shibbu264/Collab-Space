@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { Hearts } from 'react-loader-spinner'
 import Leftbar from '../components/leftbar';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@mui/material';
-import { PostContext } from '@/context/getPosts';
+
 
 const Home1 = () => {
   interface Post {
@@ -117,7 +117,7 @@ const Home1 = () => {
               <br />
 
               <div className='flex flex-col items-center gap-12 sm:hidden mt-24 mx-auto w-fit h-28   '>
-                <Link href={'/newnotes/' + unique_id}>
+                <Link href={'/space/' + unique_id}>
                   <img className='w-32 rounded-lg h-32 block mx-auto' src="/icon.jpg" />
                   <button className=' block text-lg mx-auto border my-12   bg-black text-white hover:bg-white hover:text-black font-semibold  hover:bg- px-2 py-2 rounded-lg'>
                     Create a new space !
@@ -147,7 +147,7 @@ const Home1 = () => {
             <br />
 
             <div className='block mx-auto w-fit h-fit top-[55%]   absolute left-0 right-0'>
-              <Link href={'/newnotes/' + unique_id}>
+              <Link href={'/space/' + unique_id}>
                 <div className='mb-36 bg-transparent sm:flex     text-[320px]'>+</div>
                 <button className=' block mx-auto border   bg-black text-white hover:bg-white hover:text-black font-semibold  hover:bg- px-2 py-2 rounded-xl'>
                   Create notes!

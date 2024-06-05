@@ -15,7 +15,7 @@ return ( <div>
         <ul className='ml-[2%]'>
           {user.posts?.map((post, index) => (
             <div className='flex border px-2 w-fit py-1 rounded-lg sm:justify-start items-center bg-black text-white-500 hover:text-black   hover:bg-white justify-center my-3 gap-6' key={post.id}>
-              <Link href={'/newnotes/' + post.id}>
+              <Link href={'/space/' + post.id}>
                 <li className=' '>{post.title}</li>
               </Link>
               <button
@@ -32,7 +32,7 @@ return ( <div>
  <h1 className='ml-[2%] font-bold text-blue-400 my-2'>Collabs</h1>
 {collabposts?.map((post) => (
             <div className='flex border px-2 w-fit py-1 rounded-lg sm:justify-start items-center bg-black text-white-500 hover:text-black   hover:bg-white justify-center my-3 gap-6' key={post.id}>
-              <Link href={'/newnotes/' + post.id}>
+              <Link href={'/space/' + post.id}>
                 <li className=' '>{post.title}</li>
               </Link>
               <button
