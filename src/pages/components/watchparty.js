@@ -3,6 +3,7 @@ import { useSocket } from '../../context/socket';
 import ReactPlayer from 'react-player';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
+import ChatBox from './Chatbox'
 import { Avatar, Tooltip } from '@mui/material';
 
 const WatchParty = ({movieurl,setmovieurl}) => {
@@ -10,7 +11,7 @@ const WatchParty = ({movieurl,setmovieurl}) => {
   const session=useSession()  
   const socket = useSocket();
   const router=useRouter()
-  const room=router.query.noteid
+  const room=router.query.space
   const playerRef = useRef(null);
   const [playing, setPlaying] = useState(true);
   const [users, setUsers] = useState([]);
@@ -124,7 +125,7 @@ useEffect(()=>{
   const handlePause = () => {
     const user=users.filter(user=>user.email===session.data.user.email)
     console.log(user)
-    console.log(user.active)
+    console.log(user[0].active)
     if(user[0].active){
     setPlaying(false);
     socket.emit('videoState', { room, type: 'pause' });
@@ -150,7 +151,7 @@ useEffect(()=>{
   return (
     <div className=''>
         <div className='block mb-4 mx-auto'>
-          <div className="flex mt-4 space-x-4">
+          <div className="flex  space-x-4">
         {users.map((user, index) => (
           <Tooltip key={index} title={user.name}>
             <Avatar  src={user.image} alt={user.name}  onClick={() => handleAvatarClick(user)}
@@ -159,8 +160,8 @@ useEffect(()=>{
         ))}
       </div>
       </div>
+      <div className='flex sm:flex-1 flex-row mb-[5%]'>
     <div className='sm:w-[90%] w-[95%] sm:min-w-[1020px] h-[440px] sm:h-[580px]'>
-
     {first &&  <ReactPlayer
         width={"100%"}
         controls={control}
@@ -174,6 +175,10 @@ useEffect(()=>{
         onProgress={handleProgress}
        
       />}
+    </div>
+
+    <ChatBox/>
+
     </div>
     </div>
   );

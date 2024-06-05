@@ -120,7 +120,7 @@ const Home1 = () => {
                 <Link href={'/newnotes/' + unique_id}>
                   <img className='w-32 rounded-lg h-32 block mx-auto' src="/icon.jpg" />
                   <button className=' block text-lg mx-auto border my-12   bg-black text-white hover:bg-white hover:text-black font-semibold  hover:bg- px-2 py-2 rounded-lg'>
-                    Create notes!
+                    Create a new space !
                   </button>
                 </Link>
               </div>

@@ -29,7 +29,7 @@ export default function Note() {
   const [newLink, setNewLink] = useState('');
   const [loader, setloader] = useState(true)
   const router = useRouter()
-  const noteid1 = router.query.noteid
+  const noteid1 = router.query.space
   const [groupwatchsession, setgroupsession] = useState(false)
   const [Noteidaftersaving, setnoteid] = useState("")
   const [addoption, setaddoption] = useState(false)

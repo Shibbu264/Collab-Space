@@ -73,6 +73,12 @@ io.on('connection', (socket) => {
     socket.broadcast.to(data.room).emit('control access',rooms[data.room])
    })
 
+  socket.on('chatMessage',({user,room,message,time})=>{
+    socket.join(room);
+    socket.broadcast.to(room).emit('chatMessage',({user,message,time}))
+  })
+
+
   socket.on('disconnect', () => {
     for (const room in rooms) {
       rooms[room] = rooms[room].filter(user => user.socketId !== socket.id);
@@ -89,6 +95,7 @@ io.on('connection', (socket) => {
 });
 
 const PORT = process.env.PORT || 5000;
+
 
 httpServer.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
