@@ -141,4 +141,4 @@ const MessageRight = (props) => {
   );
 };
 
-export { MessageLeft, MessageRight };
+export default { MessageLeft, MessageRight };
