@@ -16,6 +16,15 @@ model User {
   Collaborations String[]
 }
 
+model VideoStream {
+  id      String     @id @unique 
+  roomid  String     @unique
+  lastwatched   String
+  lastwatchedlink String
+  Chats String[]
+}
+
+
 
 model Post {
   id         String       @id @unique 

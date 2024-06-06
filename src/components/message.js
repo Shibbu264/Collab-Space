@@ -120,7 +120,7 @@ const MessageLeft = (props) => {
             <div>
               <MessageContent>{message}</MessageContent>
             </div>
-            <MessageTimeStampRight sx={{marginBottom:"6px"}}>{timestamp}</MessageTimeStampRight>
+            <MessageTimeStampRight sx={{margin:"8px 4px  2px 0px",fontSize:"12px"}}>{timestamp}</MessageTimeStampRight>
           </MessageBlue>
         </div>
       </MessageRow>

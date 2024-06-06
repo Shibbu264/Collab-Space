@@ -7,11 +7,11 @@ import { useSocket } from "@/context/socket";
 import { showToast } from "../../components/toast";
 import { FaTrash } from "react-icons/fa"
 import ReactPlayer from 'react-player';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Drawer, IconButton, Select, TextField } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Drawer, IconButton, Select, TextField, Tooltip, Avatar } from '@mui/material';
 import { TextareaAutosize } from '@mui/base/TextareaAutosize';
 import WatchParty from "../../components/watchparty";
 import Toolbar from "../../components/toolbar"
-import { Clear, Close, Done, PlayCircle, ResetTvRounded, ResetTvTwoTone, RestoreFromTrash } from "@mui/icons-material";
+import { Clear, Close, PlayCircle, ResetTvRounded, ResetTvTwoTone, RestoreFromTrash } from "@mui/icons-material";
 
 export default function Note() {
 
@@ -32,6 +32,8 @@ export default function Note() {
   const noteid1 = router.query.space
   const [groupwatchsession, setgroupsession] = useState(false)
   const [Noteidaftersaving, setnoteid] = useState("")
+  const [users,setcurrentusers]=useState([])
+  const intervalRef = useRef(null)
   const [addoption, setaddoption] = useState(false)
   const ab = useRef(false)
   const [Collaborators, setCollaborators] = useState('');
@@ -101,7 +103,6 @@ export default function Note() {
         })
       })
       const data = await response.json()
-      console.log("qt data", data)
       if (data.post.Collaborators.includes(session.user.email)) {
         setnoteid(data.post.id)
         settitle(data.post.title)
@@ -109,6 +110,7 @@ export default function Note() {
         setlink(data.post.links)
         setshowcontent(true)
         setloaded(true)
+        socket.emit('joinspace',{room:noteid1,user:session.user})
       }
       setloader(false)
     }
@@ -168,13 +170,25 @@ export default function Note() {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        noteid: noteid1, userid: session.user.email
+        noteid: noteid1, userid: session?.user.email
         , title: title, content: contents, links: links
       })
     })
     console.log("data saved!")
 
   }
+
+  useEffect(() => {
+   
+    intervalRef.current = setInterval(savedata, 30000);
+
+    // Clean up the interval on component unmount
+    return () => {
+      clearInterval(intervalRef.current);
+    };
+  }, []);
+
+
   const fetchDailyCodingChallenge = async () => {
     console.log(`Fetching daily coding challenge from LeetCode API.`)
 
@@ -195,19 +209,32 @@ export default function Note() {
 
   useEffect(() => { if (firstload) { savedata() } }, [contents.length, links])
   useEffect(() => {
-    console.log(socket)
+
     if (socket) {
-      socket.on('content update', (newContent) => {
-        setContent(newContent);
+      socket.on('content update', ({content,index}) => {
+        setContent((prevContents) => {
+         
+          const newContents = [...prevContents];
+         
+          newContents[index] = content;
+         
+          return newContents;
+      });
         console.log("Updating content")
       });
       socket.on('title update', (newTitle) => {
         settitle(newTitle);
         console.log("Updating content")
       });
+      socket.on('joinspace',({text,users})=>{
+        console.log(text,users)
+        setcurrentusers(users)
+      })
 
       return () => {
         socket.off('content update');
+        socket.off('title update');
+        socket.off('joinspace');
       };
     }
   }, [socket]);
@@ -262,12 +289,19 @@ export default function Note() {
 
 
               <Toolbar addCollaborator={addCollaborator} setgroupsession={setgroupsession} groupwatchsession={groupwatchsession} setCollaborators={setCollaborators} addoption={addoption} setaddoption={setaddoption} Collaborators={Collaborators} getwindowurl={getwindowurl} />
-
+             <div className="flex gap-2 justify-center mb-2">
+              {users && users.map((user, index) => (
+          <Tooltip key={index} title={user.name}>
+            <Avatar src={user.image} alt={user.name}  onClick={() => handleAvatarClick(user)}
+            style={{ border:  '2px solid transparent' }} />
+          </Tooltip>
+        ))}
+</div>
 
               <div className="flex flex-col  items-center gap-6 sm:gap-5  justify-center">
                 {editing ? <div className="flex  gap-6"> <input value={title} onChange={(e) => {
                   settitle(e.target.value)
-                  socket?.emit('update title', e.target.value)
+                  socket?.emit('update title', {content:e.target.value,room:noteid1})
 
                 }} className="block    h-fit  overflow-hidden font-bold  py-3 px-1 bg-black border border-white  sm:text-4xl text-2xl  text-red-500 rounded-lg  focus:border-none text-center min-w-32 " type="text" ></input>
                   <Button onClick={() => { setEditing(false); savedata() }} variant="contained" color="primary">
@@ -309,16 +343,19 @@ export default function Note() {
 
 
 
-                {contents.map((content, index) => (
+                {contents?.map((content, index) => (
                   <div key={index} className="flex justify-center w-[90%]">
                     <TextareaAutosize minRows={2} key={index} value={content} onChange={(e) => {
                       const value = e.target.value;
                       const updatedContents = [...contents];
                       updatedContents[index] = value;
-                      setContent(updatedContents); if (value.length <= 10 || value.includes(" ") || value[value.length - 1] === ' ' || value[value.length - 1] === '.') {
-                        savedata()
-                        socket?.emit('update content', e.target.value)
-                      }
+                      setContent(updatedContents); 
+                      if (value.length >= 10 || value.includes(" ") || value[value.length - 1] === ' ' || value[value.length - 1] === '.') {
+                        savedata()}
+
+
+                        socket?.emit('update content', {content:e.target.value,room:noteid1,index})
+                      
 
                     }} id="message" className="py-1 rounded-3xl px-6 border-8  min-w-[80%] w-fit font-semibold  sm:text-2xl text-gray-900 bg-gray-50  border-blue-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-200" placeholder="Write your thoughts here..."></TextareaAutosize >
                     <button onClick={() => deleteIndex(index)} className="ml-2 text-red-600 hover:text-red-900 focus:outline-none">

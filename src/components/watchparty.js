@@ -7,7 +7,6 @@ import ChatBox from './Chatbox'
 import { Avatar, Tooltip } from '@mui/material';
 
 const WatchParty = ({movieurl,setmovieurl}) => {
-  const [selectedUser, setSelectedUser] = useState('');
   const session=useSession()  
   const socket = useSocket();
   const router=useRouter()
@@ -26,10 +25,10 @@ const [control,setcontrol]=useState(true)
             name: session.data.user.name,
             image: session.data.user.image,
             socketId: socket.id,
-            active: session.data.user.email==selectedUser
+            active: false
           };
-         setSelectedUser(session.data.user.email)
-          socket?.emit('joinRoom', { room, user });
+        
+          socket?.emit('joinmovieRoom', { room, user });
     }
 
   },[session.status])
@@ -39,10 +38,12 @@ const [control,setcontrol]=useState(true)
 
   useEffect(() => {
     if (!socket  ) return;
-    console.log("inside")
+   
     socket.on('roomUsers', (users) => {
+      
       setUsers(users);
       const user=users.filter(user=>user.email==session.data.user.email)
+      console.log(user)
       if(user[0].active){setcontrol(true)}
       else{
         setcontrol(false)

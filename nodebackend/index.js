@@ -17,13 +17,32 @@ const io = new Server(httpServer, {
 
 app.use(cors());
 let rooms = {};
+let space={}
 io.on('connection', (socket) => {
-  socket.on('update content', (content) => {
+  socket.on('update content', ({content,room,index}) => {
     console.log(content);
-    socket.broadcast.emit('content update', content); // Broadcast to all clients except the sender
+    socket.broadcast.to(room).emit('content update', {content,index}); // Broadcast to all clients except the sender
   });
 
-  socket.on('joinRoom', ({room,user}) => {
+
+  socket.on('joinspace',({room,user})=>{
+
+    if (!space[room]) {
+      space[room] = [];
+    }
+    
+    const userExists = space[room].some(u => u.email === user.email);
+    if (!userExists) {
+ 
+    socket.join(room)
+    space[room].push(user);
+    console.log(space[room])
+    io.to(room).emit('joinspace',({text:`New user with ${user.email} joined the room !`,users:space[room]}))
+    }
+  
+  })
+
+  socket.on('joinmovieRoom', ({room,user}) => {
     socket.join(room);
     if (!rooms[room]) {
       rooms[room] = [];
@@ -36,11 +55,13 @@ io.on('connection', (socket) => {
       }
       rooms[room].push(user);
       socket.join(room);
-       io.to(room).emit('roomUsers', rooms[room]);
+       socket.emit('roomUsers', rooms[room]);
+       socket.broadcast.to(room).emit('userjoinedroom', rooms[room]);
       console.log(`${user.name} joined room: ${room}`);
     }
     else{
-       io.to(room).emit('roomUsers', rooms[room]);
+      socket.emit('roomUsers', rooms[room]);
+      socket.broadcast.to(room).emit('userjoinedroom', rooms[room]);
       console.log(`${user.name} is already in room: ${room}`);
     }
    
@@ -88,9 +109,9 @@ io.on('connection', (socket) => {
   });
 
 
-  socket.on('update title', (content) => {
+  socket.on('update title', ({content,room}) => {
     console.log(content);
-    socket.broadcast.emit('title update', content); // Broadcast to all clients except the sender
+    socket.broadcast.to(room).emit('title update', content); // Broadcast to all clients except the sender
   });
 });
 
