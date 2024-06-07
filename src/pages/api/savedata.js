@@ -6,7 +6,6 @@ import { prisma } from '@/prismahook/prisma';
 export default async function POST(req, res) {
   const uniqueId = uuidv4();
   const body = req.body
-  console.log(body)
   const noteid = body.noteid ?? ""
   const title = body.title ?? ""
   const content = body.content ?? ""

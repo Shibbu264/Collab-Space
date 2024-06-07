@@ -12,11 +12,13 @@ import { TextareaAutosize } from '@mui/base/TextareaAutosize';
 import WatchParty from "../../components/watchparty";
 import Toolbar from "../../components/toolbar"
 import { Clear, Close, PlayCircle, ResetTvRounded, ResetTvTwoTone, RestoreFromTrash } from "@mui/icons-material";
+import { useDispatch, useSelector } from "react-redux";
+import { updateLastWatchedLink, updateroomid } from "@/redux/slices/videoStreamSlice";
 
-export default function Note() {
+const  Note=({moviedata}) =>{
 
 
-
+  const dispatch = useDispatch()
   const { data: session, status } = useSession()
   const [editing, setEditing] = useState(false);
   const [open, setOpen] = useState(false);
@@ -42,7 +44,12 @@ export default function Note() {
   const [dailyquestion, setdailyquestion] = useState("")
   const playerRefs = useRef([]);
   const [draweropen,setdraweropen]=useState(false)
-  const [movieurl,setmovieurl]=useState('https://www.youtube.com/watch?v=dQw4w9WgXcQ')
+  const movieurl = useSelector((state)=>state.videoStream.lastwatchedlink);
+  
+
+useEffect(()=>{dispatch(updateroomid(router.query.space))},[noteid1])
+
+
 
   async function getwindowurl() {
     console.log(window.location.href)
@@ -182,7 +189,6 @@ export default function Note() {
    
     intervalRef.current = setInterval(savedata, 30000);
 
-    // Clean up the interval on component unmount
     return () => {
       clearInterval(intervalRef.current);
     };
@@ -399,7 +405,7 @@ export default function Note() {
             </div> :
             <div className="flex flex-col items-center">
               <Toolbar draweropen={draweropen} setdraweropen={setdraweropen} addCollaborator={addCollaborator} setgroupsession={setgroupsession} groupwatchsession={groupwatchsession} setCollaborators={setCollaborators} addoption={addoption} setaddoption={setaddoption} Collaborators={Collaborators} getwindowurl={getwindowurl} />
-              <WatchParty movieurl={movieurl} setmovieurl={setmovieurl} />
+              <WatchParty movieData={moviedata}  />
               <Drawer anchor="right" open={draweropen}>
                 <IconButton color="error" onClick={()=>{setdraweropen(false)}}>
                   <Close/>
@@ -412,14 +418,14 @@ export default function Note() {
               minWidth:"80%"
             }}
             type="search"
-            onChange={(e) => setmovieurl(e.target.value)}
+            onChange={(e) => dispatch(updateLastWatchedLink(e.target.value))}
             value={movieurl}
             id="search"
            
             placeholder="Paste video link "
          
           />
-          <IconButton onClick={()=>{setmovieurl("")}} color="primary">
+          <IconButton onClick={()=>{dispatch(updateLastWatchedLink(""))}} color="primary">
             <Clear/>
           </IconButton>
           </div>
@@ -431,7 +437,7 @@ export default function Note() {
                     {isYouTubeLink(link, index) ? (
                       <div className="flex flex-2">
                         <ReactPlayer controls={false}  key={index} width={360} height={240} url={link.url} paused={true} />
-                        <IconButton onClick={()=>{setmovieurl(link.url)}} color={link.url==movieurl?"error":"info"}>
+                        <IconButton onClick={()=>{dispatch(updateLastWatchedLink(link.url))}} color={link.url==movieurl?"error":"info"}>
                           <PlayCircle/>
                         </IconButton>
                       </div>
@@ -453,8 +459,30 @@ export default function Note() {
     </div>
 
   )
-}
 
+  
+  
+}
+export async function getServerSideProps(context) {
+  const roomid = context.params.space
+  let initialData=[]
+  try{
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/getwatchparty?roomid=${roomid}`);
+  if(res.data!=undefined){initialData = res.data;}
+  console.log(res.data)
+  }
+  catch(e){
+    console.log(e)
+  }
+  
+
+  return {
+    props: {
+      initialData,
+    },
+  };
+}
+export default Note;
 
 
 

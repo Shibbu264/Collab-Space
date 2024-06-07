@@ -5,18 +5,29 @@ import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
 import ChatBox from './Chatbox'
 import { Avatar, Tooltip } from '@mui/material';
+import { useDispatch, useSelector } from 'react-redux';
+import { updateLastWatchedLink, updateactive } from '@/redux/slices/videoStreamSlice';
 
-const WatchParty = ({movieurl,setmovieurl}) => {
+const WatchParty = ({movieData}) => {
+  console.log(movieData,"hehehe")
   const session=useSession()  
   const socket = useSocket();
+  const dispatch=useDispatch()
   const router=useRouter()
   const room=router.query.space
   const playerRef = useRef(null);
   const [playing, setPlaying] = useState(true);
   const [users, setUsers] = useState([]);
- const [seek,setseek]=useState(false)
 const [first,setcheck]=useState(false)
 const [control,setcontrol]=useState(true)
+ const movieurl = useSelector((state)=>{return state.videoStream.lastwatchedlink});
+ const playbackRate=useSelector((state)=>state.videoStream.lastwatchedspeed)
+
+
+useEffect(()=>{ dispatch(updateactive(control))},[control])
+
+
+
   useEffect((
   )=>{
     if(session.status=="authenticated"){
@@ -56,8 +67,9 @@ const [control,setcontrol]=useState(true)
   }, [socket, room]);
 
 useEffect(()=>{
-    console.log(movieurl)
+    if(control){
     socket.emit('changeUrl', {room,url:movieurl})
+    }
 
 },[movieurl])
 
@@ -70,7 +82,7 @@ useEffect(()=>{
 
 
     socket.on('changeUrl', (url) => {
-      setmovieurl(url);
+      dispatch(updateLastWatchedLink(url));
     });
 
     socket.on('videoState', (data) => {
@@ -88,7 +100,8 @@ useEffect(()=>{
     socket.on('control access',(users)=>{
       setUsers(users)
       const user=users.filter(user=>user.email==session.data.user.email)
-      if(user[0].active){setcontrol(true)}
+      if(user[0].active){setcontrol(true)
+      }
       else{
         setcontrol(false)
       }
@@ -136,7 +149,6 @@ useEffect(()=>{
     const user=users.filter(user=>user.email==session.data.user.email)
     if(user[0].active){
     console.log("seeked",time)
-  setseek(true)
     }
   };
 
@@ -145,7 +157,6 @@ useEffect(()=>{
     if(user[0].active){
     const time = state.playedSeconds;
     socket.emit('videoState', { room, type: 'seek', time });
-    setseek(false)
     }
   };
 
@@ -170,10 +181,12 @@ useEffect(()=>{
         ref={playerRef}
         url={movieurl}
         playing={playing}
+        playbackRate={playbackRate}
         onSeek={handleSeek}
         onPlay={handlePlay}
         onPause={handlePause}
         onProgress={handleProgress}
+
        
       />}
     </div>
@@ -184,4 +197,5 @@ useEffect(()=>{
     </div>
   );
 }
+
 export default WatchParty;

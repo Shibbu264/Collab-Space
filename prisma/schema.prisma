@@ -17,11 +17,12 @@ model User {
 }
 
 model VideoStream {
-  id      String     @id @unique 
-  roomid  String     @unique
-  lastwatched   String
-  lastwatchedlink String
-  Chats String[]
+  id                 Int   @id @default(autoincrement())
+  roomid             String   @unique
+  lastwatchedduration String
+  lastwatchedspeed    String
+  lastwatchedlink     String
+  Chats               String[]
 }
 
 
@@ -30,7 +31,7 @@ model Post {
   id         String       @id @unique 
   title      String
   content    String[] 
-  links   Link[]
+  links   Link[] 
   authorId   String
   author     User       @relation(fields: [authorId], references: [id])
   categories String

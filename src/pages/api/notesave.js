@@ -20,14 +20,12 @@ export default async function POST(req, res) {
         links: true 
       }
     });
-    console.log("qt",existingPost)
 
     if (existingPost) {
-     console.log("inside if")
       res.json({ post: existingPost });
     } 
     else {
-   console.log("Inside else")
+
    
       const newPost = await prisma.post.create({
         data: {
@@ -45,7 +43,6 @@ export default async function POST(req, res) {
         }
       });
 
-      console.log(newPost.authorId);
       res.json({ post: newPost });
     }
   } catch (e) {

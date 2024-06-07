@@ -12,8 +12,7 @@ export default  async function POST(req,res){
     const Collaborator=body.Collaborator
 
     try{
-      console.log(body)
-     
+
 await prisma.post.update({
     where:{
         id:noteid
