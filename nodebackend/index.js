@@ -37,9 +37,18 @@ io.on('connection', (socket) => {
     socket.join(room)
     space[room].push(user);
     console.log(space[room])
-    io.to(room).emit('joinspace',({text:`New user with ${user.email} joined the room !`,users:space[room]}))
     }
+    io.to(room).emit('joinspace',({text:`New user with ${user.email} joined the room !`,users:space[room]}))
   
+  })
+  
+  socket.on('leaveRoom',({room,user})=>{
+    socket.leave(room);
+    if (rooms[room]) {
+      rooms[room] = rooms[room].filter(u => u.email !== user.email);
+      io.to(room).emit('roomUsers', rooms[room]); // Broadcast the updated user list to the room
+      console.log(`${user.name} left room: ${room}`);
+    }
   })
 
   socket.on('joinmovieRoom', ({room,user}) => {
@@ -55,13 +64,12 @@ io.on('connection', (socket) => {
       }
       rooms[room].push(user);
       socket.join(room);
-       socket.emit('roomUsers', rooms[room]);
-       socket.broadcast.to(room).emit('userjoinedroom', rooms[room]);
+      
+       io.to(room).emit('roomUsers', rooms[room]);
       console.log(`${user.name} joined room: ${room}`);
     }
     else{
-      socket.emit('roomUsers', rooms[room]);
-      socket.broadcast.to(room).emit('userjoinedroom', rooms[room]);
+      io.to(room).emit('roomUsers', rooms[room]);
       console.log(`${user.name} is already in room: ${room}`);
     }
    
@@ -91,7 +99,7 @@ io.on('connection', (socket) => {
      
       rooms[data.room].push({ ...data.user, active: true });
     }
-    socket.broadcast.to(data.room).emit('control access',rooms[data.room])
+    io.to(data.room).emit('control access',rooms[data.room])
    })
 
   socket.on('chatMessage',({user,room,message,time})=>{

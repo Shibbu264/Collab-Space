@@ -1,9 +1,12 @@
 import { TextField,  IconButton, Toolbar as Toolbar1 } from '@mui/material';
 import { AddCircleOutline as AddCircleOutlineIcon, Cancel as CancelIcon, Link as LinkIcon, ArrowBack as ArrowBackIcon, Movie, VideoSettingsRounded } from '@mui/icons-material';
 import Link from 'next/link';
+import { toast } from 'react-toastify';
+import { useSelector } from 'react-redux';
 
 
 const Toolbar =({draweropen,setdraweropen,setCollaborators,setaddoption,Collaborators,getwindowurl,addoption,addCollaborator,groupwatchsession,setgroupsession})=>{
+  const useractive=useSelector((state)=>state.videoStream.active)
 return(
     <div className="flex justify-center">
     <Toolbar1 className="flex justify-center my-6 border w-fit margin-auto rounded-lg gap-4">
@@ -24,7 +27,11 @@ return(
             <Movie/>
           </IconButton>
 
-          {setdraweropen && <IconButton onClick={()=>{setdraweropen(!draweropen)}} color={!draweropen?'primary':'error'}>
+          {setdraweropen && <IconButton onClick={()=>{if(useractive){setdraweropen(!draweropen)}
+        else{
+          toast.error("Get control access to change video !")
+        }
+        }} color={!draweropen?'primary':'error'}>
             <VideoSettingsRounded/>
           </IconButton>}
         </>

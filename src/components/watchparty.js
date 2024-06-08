@@ -8,8 +8,7 @@ import { Avatar, Tooltip } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateLastWatchedLink, updateactive } from '@/redux/slices/videoStreamSlice';
 
-const WatchParty = ({movieData}) => {
-  console.log(movieData,"hehehe")
+const WatchParty = () => {
   const session=useSession()  
   const socket = useSocket();
   const dispatch=useDispatch()
@@ -19,7 +18,7 @@ const WatchParty = ({movieData}) => {
   const [playing, setPlaying] = useState(true);
   const [users, setUsers] = useState([]);
 const [first,setcheck]=useState(false)
-const [control,setcontrol]=useState(true)
+const [control,setcontrol]=useState(false)
  const movieurl = useSelector((state)=>{return state.videoStream.lastwatchedlink});
  const playbackRate=useSelector((state)=>state.videoStream.lastwatchedspeed)
 
@@ -63,6 +62,7 @@ useEffect(()=>{ dispatch(updateactive(control))},[control])
 
     return () => {
       socket.off('roomUsers');
+      socket.emit('leaveRoom', { room, user:session.data.user });
     };
   }, [socket, room]);
 
@@ -176,7 +176,12 @@ useEffect(()=>{
     <div className='sm:w-[90%] w-[95%] sm:min-w-[1020px] h-[440px] sm:h-[580px]'>
     {first &&  <ReactPlayer
         width={"100%"}
-        controls={control}
+        controls={true}
+        config={{
+          youtube:{
+            controls:control
+          }
+        }}
         height={"100%"}
         ref={playerRef}
         url={movieurl}
