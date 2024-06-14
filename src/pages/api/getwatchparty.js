@@ -8,12 +8,12 @@ console.log(roomId)
   }
 
   try {
-    const watchParty = await prisma.videoStream.findUnique({
+    const watchParty = await prisma.videostream.findUnique({
       where: {
         roomid: roomId,
       },
     });
-
+console.log(watchParty)
     if (!watchParty) {
       return res.status(404).json({ error: "Watch Party not found" });
     }

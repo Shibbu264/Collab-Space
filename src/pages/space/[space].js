@@ -45,6 +45,7 @@ const  Note=({moviedata}) =>{
   const playerRefs = useRef([]);
   const [draweropen,setdraweropen]=useState(false)
   const movieurl = useSelector((state)=>state.videoStream.lastwatchedlink);
+
   
 
 useEffect(()=>{dispatch(updateroomid(router.query.space))},[noteid1])
@@ -405,7 +406,7 @@ useEffect(()=>{dispatch(updateroomid(router.query.space))},[noteid1])
             </div> :
             <div className="flex flex-col items-center">
               <Toolbar draweropen={draweropen} setdraweropen={setdraweropen} addCollaborator={addCollaborator} setgroupsession={setgroupsession} groupwatchsession={groupwatchsession} setCollaborators={setCollaborators} addoption={addoption} setaddoption={setaddoption} Collaborators={Collaborators} getwindowurl={getwindowurl} />
-              <WatchParty movieData={moviedata}  />
+              <WatchParty  />
               <Drawer anchor="right" open={draweropen}>
                 <IconButton color="error" onClick={()=>{setdraweropen(false)}}>
                   <Close/>
@@ -463,25 +464,7 @@ useEffect(()=>{dispatch(updateroomid(router.query.space))},[noteid1])
   
   
 }
-export async function getServerSideProps(context) {
-  const roomid = context.params.space
-  let initialData=[]
-  try{
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/getwatchparty?roomid=${roomid}`);
-  if(res.data!=undefined){initialData = res.data;}
-  console.log(res.data)
-  }
-  catch(e){
-    console.log(e)
-  }
-  
 
-  return {
-    props: {
-      initialData,
-    },
-  };
-}
 export default Note;
 
 
