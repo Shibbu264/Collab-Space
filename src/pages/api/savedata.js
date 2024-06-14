@@ -17,7 +17,7 @@ export default async function POST(req, res) {
         id: body.userid
       }
     })
-if(links[0].watchedtill!=0){
+
     await prisma.post.update(
       {
         where: {
@@ -38,7 +38,7 @@ if(links[0].watchedtill!=0){
         },
       }
     )
-  }
+
     const post = await prisma.post.findUnique({
       where: {
         id: noteid
