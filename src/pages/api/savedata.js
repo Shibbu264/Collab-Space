@@ -10,13 +10,14 @@ export default async function POST(req, res) {
   const title = body.title ?? ""
   const content = body.content ?? ""
   const links = body.links
+  console.log(links)
   try {
     const user = await prisma.user.findUnique({
       where: {
         id: body.userid
       }
     })
-
+if(links[0].watchedtill!=0){
     await prisma.post.update(
       {
         where: {
@@ -37,6 +38,7 @@ export default async function POST(req, res) {
         },
       }
     )
+  }
     const post = await prisma.post.findUnique({
       where: {
         id: noteid
@@ -47,7 +49,7 @@ export default async function POST(req, res) {
 
   }
   catch (e) {
-    console.log(e)
+   
     res.json(
       { error: e }
     )
