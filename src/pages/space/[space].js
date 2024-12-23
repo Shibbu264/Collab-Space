@@ -7,15 +7,15 @@ import { useSocket } from "@/context/socket";
 import { showToast } from "../../components/toast";
 import { FaTrash } from "react-icons/fa"
 import ReactPlayer from 'react-player';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Drawer, IconButton, Select, TextField, Tooltip, Avatar } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Tooltip, Avatar } from '@mui/material';
 import { TextareaAutosize } from '@mui/base/TextareaAutosize';
-import WatchParty from "../../components/watchparty";
 import Toolbar from "../../components/toolbar"
-import { Clear, Close, PlayCircle, ResetTvRounded, ResetTvTwoTone, RestoreFromTrash } from "@mui/icons-material";
-import { useDispatch, useSelector } from "react-redux";
-import { updateLastWatchedLink, updateroomid } from "@/redux/slices/videoStreamSlice";
+import { useDispatch} from "react-redux";
+import { updateroomid } from "@/redux/slices/videoStreamSlice";
+import CreateSpaceLoader from "@/components/loaders/CreateSpaceLoader";
+import WatchPartyContainer from "@/components/WatchPartyContainer";
 
-const  Note=({moviedata}) =>{
+const  Note=() =>{
 
 
   const dispatch = useDispatch()
@@ -28,12 +28,10 @@ const  Note=({moviedata}) =>{
   const [contents, setContent] = useState([])
   const [links, setlink] = useState([{ link: "", watchedtill: 0 }])
   const [newContent, setNewContent] = useState('');
-  const [newLink, setNewLink] = useState('');
   const [loader, setloader] = useState(true)
   const router = useRouter()
   const noteid1 = router.query.space
   const [groupwatchsession, setgroupsession] = useState(false)
-  const [Noteidaftersaving, setnoteid] = useState("")
   const [users,setcurrentusers]=useState([])
   const intervalRef = useRef(null)
   const [addoption, setaddoption] = useState(false)
@@ -44,12 +42,31 @@ const  Note=({moviedata}) =>{
   const [dailyquestion, setdailyquestion] = useState("")
   const playerRefs = useRef([]);
   const [draweropen,setdraweropen]=useState(false)
-  const movieurl = useSelector((state)=>state.videoStream.lastwatchedlink);
+  
 
   
 
 useEffect(()=>{dispatch(updateroomid(router.query.space))},[noteid1])
 
+
+
+
+
+
+
+useEffect(() => {
+  const handleCopy = (event) => {
+    const clipboardData = event.clipboardData || window.Clipboard;
+    console.log(clipboardData)
+    const copiedText = clipboardData.getData('text');
+    console.log(copiedText)
+  };
+
+  document.addEventListener('copy', handleCopy);
+  return () => {
+    document.removeEventListener('copy', handleCopy);
+  };
+}, []);
 
 
   async function getwindowurl() {
@@ -93,7 +110,6 @@ useEffect(()=>{dispatch(updateroomid(router.query.space))},[noteid1])
   const addNewLink = async () => {
     const text = await navigator.clipboard.readText();
     console.log(text)
-    setNewLink(text)
     setlink(prevContents => [...prevContents, { url: text, watchedtill: 0 }]);
   };
 
@@ -112,7 +128,6 @@ useEffect(()=>{dispatch(updateroomid(router.query.space))},[noteid1])
       })
       const data = await response.json()
       if (data.post.Collaborators.includes(session.user.email)) {
-        setnoteid(data.post.id)
         settitle(data.post.title)
         setContent(data.post.content)
         setlink(data.post.links)
@@ -273,29 +288,14 @@ useEffect(()=>{dispatch(updateroomid(router.query.space))},[noteid1])
 
   return (
     <div>
-
+ {!loader && <Toolbar/>}
       {loader ?
-        <div className="flex items-center justify-center h-screen">
-          <div className="block text-center">
-            <h1 className="my-1 sm:text-4xl text-xl font-semibold text-[#D7EDE9]">Creating your space...</h1>
-            <Hearts
-              height="140"
-              width="140"
-              color="#4fa94d"
-              ariaLabel="hearts-loading"
-              wrapperStyle={{}}
-              wrapperClass="flex items-center justify-center"
-              visible={true}
-            />
-          </div>
-        </div>
+        <CreateSpaceLoader/>
         :
         showcontent ?
           (!groupwatchsession ?
-            <div className="my-6 max-sm:px-6 max-sm:flex max-sm:w-[100%] max-sm:justify-center">
-
-
-              <Toolbar addCollaborator={addCollaborator} setgroupsession={setgroupsession} groupwatchsession={groupwatchsession} setCollaborators={setCollaborators} addoption={addoption} setaddoption={setaddoption} Collaborators={Collaborators} getwindowurl={getwindowurl} />
+           
+            <div className="my-6  max-sm:px-6 max-sm:flex max-sm:w-[100%] max-sm:justify-center">
              <div className="flex gap-2 justify-center mb-2">
               {users && users.map((user, index) => (
           <Tooltip key={index} title={user.name}>
@@ -403,54 +403,20 @@ useEffect(()=>{dispatch(updateroomid(router.query.space))},[noteid1])
                 <button onClick={addNewIndex} className="my-1 text-center  text-5xl font-bold hover:text-black text-white border-white border  hover:bg-white p-1 rounded-md block mx-auto ">+</button>
                 <button onClick={addNewLink} className="my-1 text-center  sm:text-2xl text-lg font-bold hover:text-black text-white border-white border  hover:bg-white p-1 rounded-md block mx-auto ">Paste Link+</button>
               </div>
-            </div> :
-            <div className="flex flex-col items-center">
-              <Toolbar draweropen={draweropen} setdraweropen={setdraweropen} addCollaborator={addCollaborator} setgroupsession={setgroupsession} groupwatchsession={groupwatchsession} setCollaborators={setCollaborators} addoption={addoption} setaddoption={setaddoption} Collaborators={Collaborators} getwindowurl={getwindowurl} />
-              <WatchParty  />
-              <Drawer anchor="right" open={draweropen}>
-                <IconButton color="error" onClick={()=>{setdraweropen(false)}}>
-                  <Close/>
-                </IconButton>
-              <div  className={`flex flex-col px-10 py-4 w-[90%]  items-center justify-center`}>
-
-              <div className="flex justify-center w-[90%]">
-          <TextField
-            sx={{
-              minWidth:"80%"
-            }}
-            type="search"
-            onChange={(e) => dispatch(updateLastWatchedLink(e.target.value))}
-            value={movieurl}
-            id="search"
-           
-            placeholder="Paste video link "
-         
+            </div>  :
+            <WatchPartyContainer
+            links={links}
+            draweropen={draweropen}
+            setdraweropen={setdraweropen}
+            addCollaborator={addCollaborator}
+            addoption={addoption}
+            setaddoption={setaddoption}
+            setCollaborators={setCollaborators}
+            setgroupsession={setgroupsession}
+            groupwatchsession={groupwatchsession}
+            getwindowurl={getwindowurl}
+            Collaborators={Collaborators}
           />
-          <IconButton onClick={()=>{dispatch(updateLastWatchedLink(""))}} color="primary">
-            <Clear/>
-          </IconButton>
-          </div>
-          <h3>Paste Video Link here !</h3>
-
-          <div  className={`flex flex-col px-10 py-5 w-[90%] gap-y-12 items-center justify-center`}>
-                {links?.map((link, index) => (
-                 <>
-                    {isYouTubeLink(link, index) ? (
-                      <div className="flex flex-2">
-                        <ReactPlayer controls={false}  key={index} width={360} height={240} url={link.url} paused={true} />
-                        <IconButton onClick={()=>{dispatch(updateLastWatchedLink(link.url))}} color={link.url==movieurl?"error":"info"}>
-                          <PlayCircle/>
-                        </IconButton>
-                      </div>
-                    ) : null}
-                  </>
-              
-                ))}
-                </div>
-                </div>
-
-              </Drawer>
-            </div>
           ) : <h1 className="red-500 text-3xl flex justify-center my-[10%] ">
             Access to this note is restricted! Contact the Author !
           </h1>

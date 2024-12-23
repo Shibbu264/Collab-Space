@@ -7,9 +7,13 @@ import { useSelector } from 'react-redux';
 
 const Toolbar =({draweropen,setdraweropen,setCollaborators,setaddoption,Collaborators,getwindowurl,addoption,addCollaborator,groupwatchsession,setgroupsession})=>{
   const useractive=useSelector((state)=>state.videoStream.active)
+
+
+
+
 return(
-    <div className="flex justify-center">
-    <Toolbar1 className="flex justify-center my-6 border w-fit margin-auto rounded-lg gap-4">
+    <div className="flex w-screen bg-black fixed p-0 z-20 justify-center">
+    <div className="flex max-sm:!flex justify-center p-2 my-6 border w-fit margin-auto rounded-lg gap-4">
       {!addoption ? (
         <>
           <IconButton onClick={() => setaddoption(true)} color="primary">
@@ -42,7 +46,7 @@ return(
             onChange={(e) => setCollaborators(e.target.value)}
             value={Collaborators}
             id="search"
-            className="block min-w-80 p-4 text-sm text-white border border-gray-300 rounded-lg bg-gray-50  focus:border-blue-500 dark:bg-gray-600   dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            className="block sm:min-w-80 p-4 text-sm text-white border border-gray-300 rounded-lg bg-gray-50  focus:border-blue-500 dark:bg-gray-600   dark:focus:ring-blue-500 dark:focus:border-blue-500"
             placeholder="Email"
             required
           />
@@ -55,7 +59,7 @@ return(
           
         </>
       )}
-    </Toolbar1>
+    </div>
   </div>
 
 )

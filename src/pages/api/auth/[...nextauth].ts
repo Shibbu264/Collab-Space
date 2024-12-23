@@ -59,8 +59,11 @@ catch (error){
     async jwt({ token, user, account, profile }) {
       return token
     }
+},
+pages: {
+  signIn: '/signin',
+  newUser: '/home'
 }
 }
 const handler = NextAuth(authOptions);
-
-export default handler 
+export default handler
