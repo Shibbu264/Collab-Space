@@ -1,6 +1,6 @@
 datasource db {
   provider = "postgresql"
-  url      = "postgresql://postgres:tshirtstrip123@db.bqauzcljdqrghmcdruhb.supabase.co:5432/postgres"
+  url      = "postgresql://postgres.bqauzcljdqrghmcdruhb:tshirtstrip123@aws-0-ap-southeast-1.pooler.supabase.com:6543/postgres"
 }
 
 
